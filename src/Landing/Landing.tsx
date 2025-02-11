@@ -15,6 +15,7 @@ function Landing() {
             <p>6. Finally, press the 'Submit' button to generate</p>
             <hr/>
             <Generator/>
+            <br/>
         </div>
     )
 }
