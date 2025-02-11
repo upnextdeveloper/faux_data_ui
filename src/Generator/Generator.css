@@ -1,0 +1,60 @@
+.datainputrowcount {
+    display: inline;
+    margin-right: 2em;
+}
+
+.columntitles_name {
+    margin-right: 3em;
+    margin-left: 7em;
+    font-weight: bolder;
+}
+
+.columntitles_datatype {
+    margin-left: 9em;
+    font-weight: bolder;
+}
+
+.columntitles_required {
+    margin: 2em;
+    margin-left: 5em;
+    font-weight: bolder;
+}
+
+.datainputrow {
+    display: inline;
+    margin-right: 1em;
+    padding: 0.5em;
+    width: 15em;
+    margin-bottom: 1em;
+}
+
+.datainputrowcount {
+    display: inline;
+    margin-right: 1em;
+    padding: 0.5em;
+    width: 7em;
+    margin-bottom: 1em;
+}
+
+.datarequiredinput {
+    display: inline;
+    margin-right: 1em;
+    padding: 0.5em;
+    width: 4em;
+}
+
+.removeButton {
+    display: inline;
+    width: 2em;
+    height: 2.8em;
+}
+
+.addButton {
+    display: inline;
+    width: 10em;
+}
+
+.submitButton {
+    display: inline;
+    width: 10em;
+}
