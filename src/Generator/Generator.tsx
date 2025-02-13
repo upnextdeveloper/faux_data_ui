@@ -14,7 +14,8 @@ function Generator() {
         client
             .post('', {
                 inputFields: inputFields,
-                rowCount: rowCount
+                rowCount: rowCount,
+                fileType: fileType
             })
             .then((response) => {
                 setDataEntry([response.data])
@@ -25,6 +26,7 @@ function Generator() {
         { columnName: '', datatype: '', isRequired: 'Y' }
     ])
     const [rowCount, setRowCount] = useState(0)
+    const [fileType, setFileType] = useState('')
 
     const handleFormChange = (index: any, event: any) => {
         let data = [...inputFields];
@@ -47,6 +49,11 @@ function Generator() {
     const handleRowCountChange = (event: any) => {
         setRowCount(event.target.value);
         console.log("row count: " + event.target.value);
+    }
+
+    const handleFileTypeChange = (event: any) => {
+        setFileType(event.target.value);
+        console.log("file type: " + fileType)
     }
 
     const addFields = () => {
@@ -93,6 +100,7 @@ function Generator() {
                                 <option>Last Name</option>
                                 <option>Full Name</option>
                                 <option>Full Name with Middle</option>
+                                <option>Age</option>
                                 <option>Username</option>
                                 <option>Email</option>
                                 <option>Phone Number</option>
@@ -123,23 +131,32 @@ function Generator() {
                     )
                 })}
                 <br />
-                {inputFields.length != 0 
-                    && 
+                {inputFields.length != 0
+                    &&
                     <div>
-                    <label htmlFor={'rowCount'}>Rows</label>
-                    <br />
-                    <select name={'rowCount'} className={'datainputrowcount'} value={rowCount} onChange={(e) => handleRowCountChange(e)}>
-                        <option>-</option>
-                        <option>10</option>
-                        <option>100</option>
-                        <option>1000</option>
-                    </select>
-                </div>
+                        <label htmlFor={'rowCount'}># of Rows</label>
+                        <br />
+                        <select name={'rowCount'} className={'datainputrowcount'} value={rowCount} onChange={(e) => handleRowCountChange(e)}>
+                            <option>-</option>
+                            <option>10</option>
+                            <option>100</option>
+                            <option>1000</option>
+                        </select>
+                        <br />
+                        <label htmlFor={'rowCount'}>Export File Type</label>
+                        <br />
+                        <select className={'datainputfiletype'} value={fileType} onChange={(e) => handleFileTypeChange(e)}>
+                            <option>-</option>
+                            <option>Excel File</option>
+                            <option>MySQL File</option>
+                        </select>
+                    </div>
+
                 }
-                
-                <br /><br />
+                <br />
                 <Button variant="secondary" className={'addButton'} onClick={addFields}>+ Add Column</Button><br /><br />
                 {inputFields.length > 0 && <Button onClick={submit} className={'submitButton'}>Submit</Button>}
+                <br />
             </form>
         </div>
     )

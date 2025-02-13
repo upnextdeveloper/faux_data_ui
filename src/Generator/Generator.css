@@ -36,6 +36,14 @@
     margin-bottom: 1em;
 }
 
+.datainputfiletype {
+    display: inline;
+    margin-right: 1em;
+    padding: 0.5em;
+    width: 9em;
+    margin-bottom: 1em;
+}
+
 .datarequiredinput {
     display: inline;
     margin-right: 1em;
