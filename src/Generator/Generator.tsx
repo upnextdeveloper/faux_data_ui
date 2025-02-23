@@ -141,6 +141,9 @@ function Generator() {
                             <option>10</option>
                             <option>100</option>
                             <option>1000</option>
+                            <option>10000</option>
+                            <option>100000</option>
+                            <option>1000000</option>
                         </select>
                         <br />
                         <label htmlFor={'rowCount'}>Export File Type</label>
