@@ -86,6 +86,7 @@ function Generator() {
             e.preventDefault();
             console.log(inputFields);
             submitDataEntry(inputFields, rowCount);
+            alert("Generation Successful. File will be ready shortly")
         }
     }
 
