@@ -1,3 +1,10 @@
+.table_name {
+    margin-right: 3em;
+    margin-left: 7em;
+    font-weight: bolder;
+    height: 2em;
+}
+
 .datainputrowcount {
     display: inline;
     margin-right: 2em;

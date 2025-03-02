@@ -5,7 +5,15 @@ import axios from "axios";
 
 function Generator() {
 
-    const [dataEntry, setDataEntry] = useState({})
+    // states
+    const [dataEntry, setDataEntry] = useState({});
+    const [tableName, setTableName] = useState('');
+    const [inputFields, setInputFields] = useState([
+        { columnName: '', datatype: '', isRequired: 'Y' }
+    ])
+    const [rowCount, setRowCount] = useState(0)
+    const [fileType, setFileType] = useState('')
+
     const client = axios.create({
         baseURL: "http://localhost:8080/api/v1/entry"
     })
@@ -15,18 +23,13 @@ function Generator() {
             .post('', {
                 inputFields: inputFields,
                 rowCount: rowCount,
-                fileType: fileType
+                fileType: fileType,
+                tableName: tableName
             })
             .then((response) => {
                 setDataEntry([response.data])
             })
     }
-
-    const [inputFields, setInputFields] = useState([
-        { columnName: '', datatype: '', isRequired: 'Y' }
-    ])
-    const [rowCount, setRowCount] = useState(0)
-    const [fileType, setFileType] = useState('')
 
     const handleFormChange = (index: any, event: any) => {
         let data = [...inputFields];
@@ -48,12 +51,14 @@ function Generator() {
 
     const handleRowCountChange = (event: any) => {
         setRowCount(event.target.value);
-        console.log("row count: " + event.target.value);
     }
 
     const handleFileTypeChange = (event: any) => {
         setFileType(event.target.value);
-        console.log("file type: " + fileType)
+    }
+
+    const handleTableNameChange = (event: any) => {
+        setTableName(event.target.value);
     }
 
     const addFields = () => {
@@ -69,17 +74,46 @@ function Generator() {
     }
 
     const submit = (e: any) => {
-        e.preventDefault();
-        console.log(inputFields);
-        submitDataEntry(inputFields, rowCount);
+        if(rowCount < 10 || rowCount.toString() === '-'){
+            alert("Invalid Inputs. Please ensure that the ROW COUNT is not blank.")
+        } else if(fileType === "-") {
+            alert("Invalid Inputs. Please ensure that the EXPORT FILE TYPE is not blank.")
+        } else if(!tableName) {
+            alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
+        } else if(!validateColumnInputs()){
+            alert("Invalid Inputs. Please ensure all data points are not blank.")
+        } else {
+            e.preventDefault();
+            console.log(inputFields);
+            submitDataEntry(inputFields, rowCount);
+        }
+    }
+
+    const validateColumnInputs = () => {
+        let isInputValid = true;
+        for(let i =0; i < inputFields.length; i++){
+            let colName = inputFields[i]['columnName'];
+            let dataType = inputFields[i]['datatype']
+            if(colName.trim() === "" || dataType.trim() === "-"){
+                isInputValid = false;
+                break;
+            }else {
+                isInputValid = true;
+            }
+        }
+        return isInputValid;
     }
 
     return (
         <div>
             {inputFields.length == 0 && <h3>Click 'Add' to create your first row</h3>}
+            <label>Table Name</label>
+            <br/>
+            <input className="table_name" id="tableName" type="text" placeholder="Table Name" name="tableName" onChange={(e) => handleTableNameChange(e)}/>
+            <br/>
             <label htmlFor="columnName" className="columntitles_name">Column Name</label>
-            <label htmlFor="columnName" className="columntitles_datatype">Data Type</label>
-            <label htmlFor="columnName" className="columntitles_required">Is Required?</label>
+            <label htmlFor="dataType" className="columntitles_datatype">Data Type</label>
+            <label htmlFor="isRequired" className="columntitles_required">Is Required?</label>
             <form onSubmit={submit}>
                 {inputFields.map((input, index) => {
                     return (
@@ -92,7 +126,7 @@ function Generator() {
                                 value={input.columnName}
                                 onChange={(e) => handleFormChange(index, e)}
                             />
-                            <select value={input.datatype} name="datatype" onChange={(e) => handleDataTypeChange(index, e)} className={'datainputrow'}>
+                            <select id="dataType" value={input.datatype} name="datatype" onChange={(e) => handleDataTypeChange(index, e)} className={'datainputrow'}>
                                 <option>-</option>
                                 <option>Identification Number</option>
                                 <option>First Name</option>
@@ -121,7 +155,7 @@ function Generator() {
                                 <option>Marital Status</option>
                                 <option>Current Education</option>
                             </select>
-                            <select defaultValue={"Y"} value={input.isRequired} name="isRequired" onChange={(e) => handleIsRequiredChange(index, e)} className={'datarequiredinput'}>
+                            <select id="isRequired" defaultValue={"Y"} value={input.isRequired} name="isRequired" onChange={(e) => handleIsRequiredChange(index, e)} className={'datarequiredinput'}>
                                 <option>Y</option>
                                 <option>N</option>
                             </select>
