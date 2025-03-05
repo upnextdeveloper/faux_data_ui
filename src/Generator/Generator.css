@@ -53,13 +53,15 @@
 
 .datarequiredinput {
     display: inline;
+    margin-left: 2em;
     margin-right: 1em;
     padding: 0.5em;
-    width: 4em;
+    width: 6em;
 }
 
 .removeButton {
     display: inline;
+    margin-left: 2em;
     width: 2em;
     height: 2.8em;
 }
