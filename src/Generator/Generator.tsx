@@ -79,9 +79,13 @@ function Generator() {
             alert("Invalid Inputs. Please ensure that the EXPORT FILE TYPE is not blank.")
         } else if (!tableName) {
             alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
-        } else if (!validateColumnInputs()) {
+        } else if(tableName.trim() === "") {
+            alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
+        }
+        else if (!validateColumnInputs()) {
             alert("Invalid Inputs. Please ensure all data points are not blank.")
         } else {
+            setTableName(tableName.trim());
             e.preventDefault();
             console.log(inputFields);
             submitDataEntry(inputFields, rowCount);
