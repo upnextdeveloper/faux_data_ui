@@ -98,7 +98,7 @@ function Generator() {
         for (let i = 0; i < inputFields.length; i++) {
             let colName = inputFields[i]['columnName'];
             let dataType = inputFields[i]['datatype']
-            if (colName.trim() === "" || dataType.trim() === "-") {
+            if (colName.trim() === "" || dataType.trim() === "") {
                 isInputValid = false;
                 break;
             } else {
