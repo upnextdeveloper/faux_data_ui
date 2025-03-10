@@ -153,8 +153,6 @@ function Generator() {
                                 <MenuItem value={'First Name'}>First Name</MenuItem>
                                 <MenuItem value={'Middle Name'}>Middle Name</MenuItem>
                                 <MenuItem value={'Last Name'}>Last Name</MenuItem>
-                                <MenuItem value={'Full Name'}>Full Name</MenuItem>
-                                <MenuItem value={'Full Name with Middle'}>Full Name with Middle</MenuItem>
                                 <MenuItem value={'Age'}>Age</MenuItem>
                                 <MenuItem value={'Username'}>Username</MenuItem>
                                 <MenuItem value={'Email'}>Email</MenuItem>
