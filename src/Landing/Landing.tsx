@@ -21,7 +21,6 @@ function Landing() {
                 <p>6. Finally, press the 'Submit' button to generate</p>
                 <hr />
             </Box>
-            <Generator />
             <br />
         </div>
     )

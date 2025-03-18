@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import './Generator.css'
 import axios from "axios";
-import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import Landing from "../Landing/Landing";
 
 function Generator() {
 
@@ -13,6 +14,7 @@ function Generator() {
     ])
     const [rowCount, setRowCount] = useState(0)
     const [fileType, setFileType] = useState('')
+    const [generationLoading, setGenerationLoading] = useState(false);
 
     const client = axios.create({
         baseURL: "http://localhost:8080/api/v1/entry"
@@ -28,7 +30,16 @@ function Generator() {
             })
             .then((response) => {
                 setDataEntry([response.data])
-            })
+                alert("File generated successfully")
+            }).catch(
+                function (error) {
+                    alert("An error occurred. Please contact IT Admin")
+                }
+            ).finally(
+                function completeAction() {
+                    setGenerationLoading(false);
+                }
+            )
     }
 
     const handleFormChange = (index: any, event: any) => {
@@ -79,7 +90,7 @@ function Generator() {
             alert("Invalid Inputs. Please ensure that the EXPORT FILE TYPE is not blank.")
         } else if (!tableName) {
             alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
-        } else if(tableName.trim() === "") {
+        } else if (tableName.trim() === "") {
             alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
         }
         else if (!validateColumnInputs()) {
@@ -88,8 +99,8 @@ function Generator() {
             setTableName(tableName.trim());
             e.preventDefault();
             console.log(inputFields);
+            setGenerationLoading(true);
             submitDataEntry(inputFields, rowCount);
-            alert("Generation Successful. File will be ready shortly")
         }
     }
 
@@ -110,6 +121,12 @@ function Generator() {
 
     return (
         <div>
+            <Box sx={{ width: '100%', maxWidth: 900 }}>
+                <Typography variant="h2">
+                    <span style={{ fontStyle: 'italic', color: 'yellow' }}>FauxData</span> - Random Data Generator
+                </Typography>
+            </Box>
+            <Landing />
             {inputFields.length == 0 && <h3>Click 'Add' to create your first row</h3>}
             <InputLabel id="demo-simple-select-label">Table Name</InputLabel>
             <br />
@@ -152,61 +169,34 @@ function Generator() {
                                 labelId="demo-simple-select-label"
                                 className={'datainputrow'}
                             >
-                                <MenuItem value={'-'}>-</MenuItem>
                                 <MenuItem value={'Identification Number'}>Identification Number</MenuItem>
                                 <MenuItem value={'First Name'}>First Name</MenuItem>
                                 <MenuItem value={'Middle Name'}>Middle Name</MenuItem>
                                 <MenuItem value={'Last Name'}>Last Name</MenuItem>
                                 <MenuItem value={'Age'}>Age</MenuItem>
-                                <MenuItem value={'Username'}>Username</MenuItem>
-                                <MenuItem value={'Email'}>Email</MenuItem>
-                                <MenuItem value={'Phone Number'}>Phone Number</MenuItem>
-                                <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
-                                <MenuItem value={'Future Date - Up to 50 Years'}>Future Date - Up to 50 Years</MenuItem>
-                                <MenuItem value={'Street'}>Street</MenuItem>
-                                <MenuItem value={'City'}>City - US</MenuItem>
-                                <MenuItem value={'State'}>State - US</MenuItem>
-                                <MenuItem value={'State Abbreviation'}>State Abbreviation</MenuItem>
-                                <MenuItem value={'Zip Code'}>Zip Code</MenuItem>
-                                <MenuItem value={'True/False'}>True/False</MenuItem>
                                 <MenuItem value={'Gender'}>Gender</MenuItem>
                                 <MenuItem value={'Birthday'}>Birthday</MenuItem>
-                                <MenuItem value={'Money - Positive Only'}>Money - Positive Only</MenuItem>
-                                <MenuItem value={'Money - Positive/Negative'}>Money - Positive/Negative</MenuItem>
-                                <MenuItem value={'Positive Numbers'}>Positive Numbers</MenuItem>
                                 <MenuItem value={'Race'}>Race</MenuItem>
                                 <MenuItem value={'Marital Status'}>Marital Status</MenuItem>
                                 <MenuItem value={'Current Education'}>Current Education</MenuItem>
+                                <MenuItem value={'Username'}>Username</MenuItem>
+                                <MenuItem value={'Email'}>Email</MenuItem>
+                                <MenuItem value={'Phone Number'}>Phone Number</MenuItem>
+                                <MenuItem value={'Street'}>Street</MenuItem>
+                                <MenuItem value={'City'}>City - US</MenuItem>
+                                <MenuItem value={'State'}>State - US</MenuItem>
+                                <MenuItem value={'State Abbreviation'}>State Abbreviation - US</MenuItem>
+                                <MenuItem value={'Zip Code'}>Zip Code</MenuItem>
+                                {/* To implement soon */}
+                                {/* <MenuItem value={'Latitude'}>Latitude</MenuItem>
+                                <MenuItem value={'Longitude'}>Longitude</MenuItem> */}
+                                <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
+                                <MenuItem value={'Future Date - Up to 50 Years'}>Future Date - Up to 50 Years</MenuItem>
+                                <MenuItem value={'Money - Positive Only'}>Money - Positive Only</MenuItem>
+                                <MenuItem value={'Money - Positive/Negative'}>Money - Positive/Negative</MenuItem>
+                                <MenuItem value={'Positive Numbers'}>Positive Numbers</MenuItem>
+                                <MenuItem value={'True/False'}>True/False</MenuItem>
                             </Select>
-                            {/* <select id="dataType" value={input.datatype} name="datatype" onChange={(e) => handleDataTypeChange(index, e)} className={'datainputrow'}>
-                                <option>-</option>
-                                <option>Identification Number</option>
-                                <option>First Name</option>
-                                <option>Middle Name</option>
-                                <option>Last Name</option>
-                                <option>Full Name</option>
-                                <option>Full Name with Middle</option>
-                                <option>Age</option>
-                                <option>Username</option>
-                                <option>Email</option>
-                                <option>Phone Number</option>
-                                <option>Past Date - Up to 50 Years</option>
-                                <option>Future Date - Up to 50 Years</option>
-                                <option>Street</option>
-                                <option>City</option>
-                                <option>State</option>
-                                <option>State Abbreviation</option>
-                                <option>Zip Code</option>
-                                <option>True/False</option>
-                                <option>Gender</option>
-                                <option>Birthday</option>
-                                <option>Money - Positive Only</option>
-                                <option>Money - Positive/Negative</option>
-                                <option>Positive Numbers</option>
-                                <option>Race</option>
-                                <option>Marital Status</option>
-                                <option>Current Education</option>
-                            </select> */}
                             <Select
                                 id="isRequired"
                                 defaultValue={"Y"}
@@ -224,6 +214,7 @@ function Generator() {
                     )
                 })}
                 <br />
+
                 <Button variant="contained" className={'addButton'} onClick={addFields}>+ Column</Button><br /><br />
 
                 <br />
@@ -262,6 +253,10 @@ function Generator() {
                 }
                 <br />
                 {inputFields.length > 0 && <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>Submit</Button>}
+                <br />
+                {generationLoading &&
+                    <CircularProgress />
+                }
                 <br />
             </form>
         </div>
