@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import './Generator.css'
 import axios from "axios";
-import { Button, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, colors, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import Landing from "../Landing/Landing";
 
 function Generator() {
 
     // states
     const [dataEntry, setDataEntry] = useState({});
     const [tableName, setTableName] = useState('');
+    const [isRequired, setisRequired] = useState('');
     const [inputFields, setInputFields] = useState([
-        { columnName: '', datatype: '', isRequired: 'Y' }
+        { columnName: '', datatype: '', isRequired: '' }
     ])
     const [rowCount, setRowCount] = useState(0)
     const [fileType, setFileType] = useState('')
+    const [generationLoading, setGenerationLoading] = useState(false);
+    const [generationSuccessFul, setGenerationSuccessFul] = useState(false);
+    const [generationFailed, setGenerationFailed] = useState(false);
 
     const client = axios.create({
         baseURL: "http://localhost:8080/api/v1/entry"
@@ -28,7 +33,18 @@ function Generator() {
             })
             .then((response) => {
                 setDataEntry([response.data])
-            })
+                setGenerationSuccessFul(true);
+                setGenerationFailed(false);
+            }).catch(
+                function (error) {
+                    setGenerationSuccessFul(false);
+                    setGenerationFailed(true);
+                }
+            ).finally(
+                function completeAction() {
+                    setGenerationLoading(false);
+                }
+            )
     }
 
     const handleFormChange = (index: any, event: any) => {
@@ -46,6 +62,11 @@ function Generator() {
     const handleIsRequiredChange = (index: any, event: any) => {
         let data = [...inputFields];
         data[index].isRequired = event.target.value;
+        if(event.target.value === 'Y'){
+            setisRequired(event.target.value)
+        }else {
+            setisRequired(event.target.value)
+        }
         setInputFields(data);
     }
 
@@ -62,7 +83,7 @@ function Generator() {
     }
 
     const addFields = () => {
-        let newField = { columnName: '', datatype: '', isRequired: 'Y' };
+        let newField = { columnName: '', datatype: '', isRequired: '' };
         setInputFields([...inputFields, newField]);
     }
 
@@ -73,19 +94,26 @@ function Generator() {
     }
 
     const submit = (e: any) => {
+        setGenerationSuccessFul(false);
+        setGenerationFailed(false);
         if (rowCount < 10 || rowCount.toString() === '-') {
             alert("Invalid Inputs. Please ensure that the ROW COUNT is not blank.")
         } else if (fileType === "-") {
             alert("Invalid Inputs. Please ensure that the EXPORT FILE TYPE is not blank.")
         } else if (!tableName) {
             alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
+        } else if (tableName.trim() === "") {
+            alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
+        } else if (isRequired.trim() === ""){
+            alert("Invalid Inputs. Please ensure that the 'Is Required' is not blank.")
         } else if (!validateColumnInputs()) {
             alert("Invalid Inputs. Please ensure all data points are not blank.")
         } else {
+            setTableName(tableName.trim());
             e.preventDefault();
             console.log(inputFields);
+            setGenerationLoading(true);
             submitDataEntry(inputFields, rowCount);
-            alert("Generation Successful. File will be ready shortly")
         }
     }
 
@@ -94,7 +122,8 @@ function Generator() {
         for (let i = 0; i < inputFields.length; i++) {
             let colName = inputFields[i]['columnName'];
             let dataType = inputFields[i]['datatype']
-            if (colName.trim() === "" || dataType.trim() === "-") {
+            let isReq = inputFields[i]['isRequired']
+            if (colName.trim() === "" || dataType.trim() === "" || isReq.trim() === "") {
                 isInputValid = false;
                 break;
             } else {
@@ -106,6 +135,12 @@ function Generator() {
 
     return (
         <div>
+            <Box sx={{ width: '100%', maxWidth: 900 }}>
+                <Typography variant="h2">
+                    <span style={{ fontStyle: 'italic', color: 'yellow' }}>FauxData</span> - Random Data Generator
+                </Typography>
+            </Box>
+            <Landing />
             {inputFields.length == 0 && <h3>Click 'Add' to create your first row</h3>}
             <InputLabel id="demo-simple-select-label">Table Name</InputLabel>
             <br />
@@ -115,24 +150,19 @@ function Generator() {
                 onChange={(e) => handleTableNameChange(e)}
                 id="outlined-basic"
                 label="Table Name"
-                variant="outlined" />
+                variant="outlined" 
+               />
             <br />
-
-            <label htmlFor="columnName" className="columntitles_name">Column Name</label>
+            <br/>
+            <br/>
+            {/* <label htmlFor="columnName" className="columntitles_name">Column Name</label>
             <label htmlFor="dataType" className="columntitles_datatype">Data Type</label>
-            <label htmlFor="isRequired" className="columntitles_required">Is Required?</label>
+            <label htmlFor="isRequired" className="columntitles_required">Is Required?</label> */}
             <form onSubmit={submit}>
                 {inputFields.map((input, index) => {
                     return (
                         <div key={index}>
                             <h6 className={'datainputrowcount'}>{index + 1}</h6>
-                            {/* <input className={'datainputrow'}
-                                id="columnName"
-                                name='columnName'
-                                placeholder='Name'
-                                value={input.columnName}
-                                onChange={(e) => handleFormChange(index, e)}
-                            /> */}
                             <TextField className={'datainputrow'} type="text"
                                 value={input.columnName}
                                 placeholder="Column Name"
@@ -141,76 +171,73 @@ function Generator() {
                                 id="outlined-basic"
                                 label="Column Name"
                                 variant="filled" />
+                                <span className="sep_span"></span>
                             <Select
                                 value={input.datatype}
                                 name="datatype"
+                                displayEmpty
                                 onChange={(e) => handleDataTypeChange(index, e)}
                                 labelId="demo-simple-select-label"
                                 className={'datainputrow'}
+                                label="Data Type"
                             >
-                                <MenuItem value={'-'}>-</MenuItem>
+                                <MenuItem disabled value="">
+                                    <em>Data Type</em>
+                                </MenuItem>
+                                <optgroup label="Identification"></optgroup>
                                 <MenuItem value={'Identification Number'}>Identification Number</MenuItem>
+                                <MenuItem value={'Username'}>Username</MenuItem>
+                                <hr />
+                                <optgroup label="Person"></optgroup>
                                 <MenuItem value={'First Name'}>First Name</MenuItem>
                                 <MenuItem value={'Middle Name'}>Middle Name</MenuItem>
                                 <MenuItem value={'Last Name'}>Last Name</MenuItem>
                                 <MenuItem value={'Age'}>Age</MenuItem>
-                                <MenuItem value={'Username'}>Username</MenuItem>
-                                <MenuItem value={'Email'}>Email</MenuItem>
-                                <MenuItem value={'Phone Number'}>Phone Number</MenuItem>
-                                <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
-                                <MenuItem value={'Future Date - Up to 50 Years'}>Future Date - Up to 50 Years</MenuItem>
-                                <MenuItem value={'Street'}>Street</MenuItem>
-                                <MenuItem value={'City'}>City - US</MenuItem>
-                                <MenuItem value={'State'}>State - US</MenuItem>
-                                <MenuItem value={'State Abbreviation'}>State Abbreviation</MenuItem>
-                                <MenuItem value={'Zip Code'}>Zip Code</MenuItem>
-                                <MenuItem value={'True/False'}>True/False</MenuItem>
                                 <MenuItem value={'Gender'}>Gender</MenuItem>
                                 <MenuItem value={'Birthday'}>Birthday</MenuItem>
-                                <MenuItem value={'Money - Positive Only'}>Money - Positive Only</MenuItem>
-                                <MenuItem value={'Money - Positive/Negative'}>Money - Positive/Negative</MenuItem>
-                                <MenuItem value={'Positive Numbers'}>Positive Numbers</MenuItem>
                                 <MenuItem value={'Race'}>Race</MenuItem>
                                 <MenuItem value={'Marital Status'}>Marital Status</MenuItem>
                                 <MenuItem value={'Current Education'}>Current Education</MenuItem>
+                                <MenuItem value={'Email'}>Email</MenuItem>
+                                <MenuItem value={'Phone Number'}>Phone Number</MenuItem>
+                                <hr />
+                                <optgroup label="Location"></optgroup>
+                                <MenuItem value={'Street'}>Street</MenuItem>
+                                <MenuItem value={'City'}>City - US</MenuItem>
+                                <MenuItem value={'State'}>State - US</MenuItem>
+                                <MenuItem value={'State Abbreviation'}>State Abbreviation - US</MenuItem>
+                                <MenuItem value={'Zip Code'}>Zip Code</MenuItem>
+                                {/* To implement soon */}
+                                {/* <MenuItem value={'Latitude'}>Latitude</MenuItem>
+                                <MenuItem value={'Longitude'}>Longitude</MenuItem> */}
+                                <hr />
+                                <optgroup label="Date"></optgroup>
+                                <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
+                                <MenuItem value={'Future Date - Up to 50 Years'}>Future Date - Up to 50 Years</MenuItem>
+                                <hr />
+                                <optgroup label="Finances"></optgroup>
+                                <MenuItem value={'Money - Positive Only'}>Money - Positive Only</MenuItem>
+                                <MenuItem value={'Money - Positive/Negative'}>Money - Positive/Negative</MenuItem>
+                                <hr />
+                                <optgroup label="Numbers"></optgroup>
+                                <MenuItem value={'Positive Numbers'}>Positive Numbers</MenuItem>
+                                <hr />
+                                <optgroup label="Boolean"></optgroup>
+                                <MenuItem value={'True/False'}>True/False</MenuItem>
                             </Select>
-                            {/* <select id="dataType" value={input.datatype} name="datatype" onChange={(e) => handleDataTypeChange(index, e)} className={'datainputrow'}>
-                                <option>-</option>
-                                <option>Identification Number</option>
-                                <option>First Name</option>
-                                <option>Middle Name</option>
-                                <option>Last Name</option>
-                                <option>Full Name</option>
-                                <option>Full Name with Middle</option>
-                                <option>Age</option>
-                                <option>Username</option>
-                                <option>Email</option>
-                                <option>Phone Number</option>
-                                <option>Past Date - Up to 50 Years</option>
-                                <option>Future Date - Up to 50 Years</option>
-                                <option>Street</option>
-                                <option>City</option>
-                                <option>State</option>
-                                <option>State Abbreviation</option>
-                                <option>Zip Code</option>
-                                <option>True/False</option>
-                                <option>Gender</option>
-                                <option>Birthday</option>
-                                <option>Money - Positive Only</option>
-                                <option>Money - Positive/Negative</option>
-                                <option>Positive Numbers</option>
-                                <option>Race</option>
-                                <option>Marital Status</option>
-                                <option>Current Education</option>
-                            </select> */}
+
                             <Select
                                 id="isRequired"
-                                defaultValue={"Y"}
+                                displayEmpty
                                 value={input.isRequired}
                                 name="isRequired"
                                 onChange={(e) => handleIsRequiredChange(index, e)}
                                 className={'datarequiredinput'}
+                                label="Required?"
                             >
+                                <MenuItem disabled value="">
+                                    <em>Required?</em>
+                                </MenuItem>
                                 <MenuItem value={'Y'}>Yes</MenuItem>
                                 <MenuItem value={'N'}>No</MenuItem>
                             </Select>
@@ -220,6 +247,7 @@ function Generator() {
                     )
                 })}
                 <br />
+
                 <Button variant="contained" className={'addButton'} onClick={addFields}>+ Column</Button><br /><br />
 
                 <br />
@@ -247,7 +275,6 @@ function Generator() {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={fileType}
-                            label="Age"
                             onChange={(e) => handleFileTypeChange(e)}
                         >
                             <MenuItem value={'Excel File'}>Excel File</MenuItem>
@@ -258,6 +285,18 @@ function Generator() {
                 }
                 <br />
                 {inputFields.length > 0 && <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>Submit</Button>}
+                <br />
+                {generationLoading &&
+                    <CircularProgress />
+                }
+                <br />
+                {generationSuccessFul &&
+                    <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
+                }
+                {
+                    generationFailed &&
+                    <h3 className={'failed_generation'}>We could not generate your {fileType}. Please contact the IT Department.</h3>
+                }
                 <br />
             </form>
         </div>

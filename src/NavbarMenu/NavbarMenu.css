@@ -1,0 +1,27 @@
+.float_right {
+    float:right;
+}
+
+@media (max-width:320px)  { 
+    /* smartphones, iPhone, portrait 480x320 phones */ 
+    .fd_btn {
+        margin: auto;
+    }
+    .float_right {
+        margin: auto;
+        background-color: red;
+    }
+    body {
+        background-color: beige;
+    }
+}
+
+@media (max-width:481px) {
+    .fd_btn {
+        margin: auto;
+    }
+    .float_right {
+        background-color: red;
+        margin: auto;
+    }
+}
