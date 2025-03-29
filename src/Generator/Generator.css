@@ -1,3 +1,8 @@
+.backdrop {
+    background-color: lightblue;
+    color: black;
+}
+
 .table_name {
     margin-right: 3em;
     margin-left: 7em;

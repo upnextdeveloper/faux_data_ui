@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './Generator.css'
 import axios from "axios";
-import { Box, Button, CircularProgress, colors, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, colors, Divider, FormHelperText, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import Landing from "../Landing/Landing";
 
 function Generator() {
@@ -62,9 +62,9 @@ function Generator() {
     const handleIsRequiredChange = (index: any, event: any) => {
         let data = [...inputFields];
         data[index].isRequired = event.target.value;
-        if(event.target.value === 'Y'){
+        if (event.target.value === 'Y') {
             setisRequired(event.target.value)
-        }else {
+        } else {
             setisRequired(event.target.value)
         }
         setInputFields(data);
@@ -104,7 +104,7 @@ function Generator() {
             alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
         } else if (tableName.trim() === "") {
             alert("Invalid Inputs. Please ensure that the TABLE NAME is not blank.")
-        } else if (isRequired.trim() === ""){
+        } else if (isRequired.trim() === "") {
             alert("Invalid Inputs. Please ensure that the 'Is Required' is not blank.")
         } else if (!validateColumnInputs()) {
             alert("Invalid Inputs. Please ensure all data points are not blank.")
@@ -134,12 +134,10 @@ function Generator() {
     }
 
     return (
-        <div>
-            <Box sx={{ width: '100%', maxWidth: 900 }}>
-                <Typography variant="h2">
-                    <span style={{ fontStyle: 'italic', color: 'yellow' }}>FauxData</span> - Random Data Generator
-                </Typography>
-            </Box>
+        <div className={'backdrop'}>
+            <Typography align="center" variant="h2" gutterBottom>
+                <span style={{ fontStyle: 'italic', color: 'white' }}>FauxData</span> - Random Data Generator
+            </Typography>
             <Landing />
             {inputFields.length == 0 && <h3>Click 'Add' to create your first row</h3>}
             <InputLabel id="demo-simple-select-label">Table Name</InputLabel>
@@ -150,18 +148,17 @@ function Generator() {
                 onChange={(e) => handleTableNameChange(e)}
                 id="outlined-basic"
                 label="Table Name"
-                variant="outlined" 
-               />
+                variant="outlined"
+            />
             <br />
-            <br/>
-            <br/>
-            {/* <label htmlFor="columnName" className="columntitles_name">Column Name</label>
-            <label htmlFor="dataType" className="columntitles_datatype">Data Type</label>
-            <label htmlFor="isRequired" className="columntitles_required">Is Required?</label> */}
+            <br />
+            <br />
             <form onSubmit={submit}>
                 {inputFields.map((input, index) => {
                     return (
                         <div key={index}>
+                            <hr />
+                            <br />
                             <h6 className={'datainputrowcount'}>{index + 1}</h6>
                             <TextField className={'datainputrow'} type="text"
                                 value={input.columnName}
@@ -171,7 +168,7 @@ function Generator() {
                                 id="outlined-basic"
                                 label="Column Name"
                                 variant="filled" />
-                                <span className="sep_span"></span>
+                            <span className="sep_span"></span>
                             <Select
                                 value={input.datatype}
                                 name="datatype"
@@ -211,8 +208,24 @@ function Generator() {
                                 {/* <MenuItem value={'Latitude'}>Latitude</MenuItem>
                                 <MenuItem value={'Longitude'}>Longitude</MenuItem> */}
                                 <hr />
-                                <optgroup label="Date"></optgroup>
+                                <optgroup label="Date - Past"></optgroup>
+                                <MenuItem value={'Past Date - Up to 2 Days'}>Past Date - Up to 2 Days</MenuItem>
+                                <MenuItem value={'Past Date - Up to 1 Week'}>Past Date - Up to 1 Week</MenuItem>
+                                <MenuItem value={'Past Date - Up to 1 Month'}>Past Date - Up to 1 Month</MenuItem>
+                                <MenuItem value={'Past Date - Up to 6 Months'}>Past Date - Up to 6 Months</MenuItem>
+                                <MenuItem value={'Past Date - Up to 1 Year'}>Past Date - Up to 1 Year</MenuItem>
+                                <MenuItem value={'Past Date - Up to 10 Years'}>Past Date - Up to 10 Years</MenuItem>
+                                <MenuItem value={'Past Date - Up to 25 Years'}>Past Date - Up to 25 Years</MenuItem>
                                 <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
+                                <hr/>
+                                <optgroup label="Date - Future"></optgroup>
+                                <MenuItem value={'Future Date - Up to 2 Days'}>Future Date - Up to 2 Days</MenuItem>
+                                <MenuItem value={'Future Date - Up to 1 Week'}>Future Date - Up to 1 Week</MenuItem>
+                                <MenuItem value={'Future Date - Up to 1 Month'}>Future Date - Up to 1 Month</MenuItem>
+                                <MenuItem value={'Future Date - Up to 6 Months'}>Future Date - Up to 6 Months</MenuItem>
+                                <MenuItem value={'Future Date - Up to 1 Year'}>Future Date - Up to 1 Year</MenuItem>
+                                <MenuItem value={'Future Date - Up to 10 Years'}>Future Date - Up to 10 Years</MenuItem>
+                                <MenuItem value={'Future Date - Up to 25 Years'}>Future Date - Up to 25 Years</MenuItem>
                                 <MenuItem value={'Future Date - Up to 50 Years'}>Future Date - Up to 50 Years</MenuItem>
                                 <hr />
                                 <optgroup label="Finances"></optgroup>
@@ -223,6 +236,8 @@ function Generator() {
                                 <MenuItem value={'Positive Numbers'}>Positive Numbers</MenuItem>
                                 <hr />
                                 <optgroup label="Boolean"></optgroup>
+                                <MenuItem value={'True'}>True</MenuItem>
+                                <MenuItem value={'False'}>False</MenuItem>
                                 <MenuItem value={'True/False'}>True/False</MenuItem>
                             </Select>
 
@@ -243,6 +258,7 @@ function Generator() {
                             </Select>
 
                             <Button variant="contained" color="error" className={'removeButton'} onClick={() => removeField(index)}>-</Button>
+                            <br />
                         </div>
                     )
                 })}
@@ -262,11 +278,13 @@ function Generator() {
                             label="Row Count"
                             onChange={(e) => handleRowCountChange(e)}
                         >
-                            <MenuItem value={10}>Ten (10)</MenuItem>
-                            <MenuItem value={100}>One Hundred (100)</MenuItem>
+                            {/* <MenuItem value={10}>Ten (10)</MenuItem>
+                            <MenuItem value={100}>One Hundred (100)</MenuItem> */}
                             <MenuItem value={1000}>One Thousand (1000)</MenuItem>
                             <MenuItem value={10000}>Ten Thousand (10000)</MenuItem>
+                            <MenuItem value={50000}>Fifty Thousand (50000)</MenuItem>
                             <MenuItem value={100000}>One Hundred Thousand (100000)</MenuItem>
+                            <MenuItem value={500000}>Five Hundred Thousand (500000)</MenuItem>
                             <MenuItem value={1000000}>One Million (1000000)</MenuItem>
                         </Select>
                         <br /><br />
@@ -299,6 +317,7 @@ function Generator() {
                 }
                 <br />
             </form>
+            <hr />
         </div>
     )
 }

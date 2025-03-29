@@ -16,11 +16,12 @@ function NavbarMenu() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
+                            <Nav.Link href="/">Home</Nav.Link>
                             <Nav.Link href="/generator">Generator</Nav.Link>
                             {/* <Nav.Link>
                                 <Link to="/generator">Generator</Link>
                             </Nav.Link> */}
-                            <NavDropdown className={'float_right'} title="Dropdown" id="basic-nav-dropdown">
+                            {/* <NavDropdown className={'float_right'} title="Dropdown" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.2">
                                     Another action
@@ -30,7 +31,7 @@ function NavbarMenu() {
                                 <NavDropdown.Item href="#action/3.4">
                                     Separated link
                                 </NavDropdown.Item>
-                            </NavDropdown>
+                            </NavDropdown> */}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
