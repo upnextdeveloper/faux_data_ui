@@ -1,9 +1,10 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Link, Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomePage from "../HomePage/HomePage";
 import Generator from "../Generator/Generator";
 import './NavbarMenu.css'
+import RetrieveFile from "../RetrieveFile/RetrieveFile";
 
 function NavbarMenu() {
     return (
@@ -39,6 +40,8 @@ function NavbarMenu() {
             <Routes>
                 <Route path="/" element={<HomePage />}></Route>
                 <Route path="generator" element={<Generator />}></Route>
+                <Route path="retriever" element={<RetrieveFile/>}></Route>
+                <Route path="*" element={<Navigate to={'/'}/>}></Route>
             </Routes>
         </div>
     );

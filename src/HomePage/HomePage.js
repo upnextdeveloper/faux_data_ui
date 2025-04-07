@@ -9,6 +9,7 @@ function HomePage() {
 
     return (
         <div>
+            <h1 style={{fontWeight: 'bolder', fontFamily:'cursive'}}>FAUX DATA</h1>
             <h1>Power Up Your Programming Projects</h1>
             <br/>
             <h4>Demonstrate the validity of your software Projects

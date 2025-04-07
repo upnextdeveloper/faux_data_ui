@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import './Generator.css'
 import axios from "axios";
-import { Box, Button, CircularProgress, colors, Divider, FormHelperText, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, colors, Divider, FormHelperText, Input, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import Landing from "../Landing/Landing";
+import { saveAs } from "file-saver"
 
 function Generator() {
 
@@ -13,11 +14,14 @@ function Generator() {
     const [inputFields, setInputFields] = useState([
         { columnName: '', datatype: '', isRequired: '' }
     ])
-    const [rowCount, setRowCount] = useState(0)
-    const [fileType, setFileType] = useState('')
+    const [rowCount, setRowCount] = useState(0);
+    const [fileType, setFileType] = useState('');
+    const [fileName, setFileName] = useState('');
     const [generationLoading, setGenerationLoading] = useState(false);
     const [generationSuccessFul, setGenerationSuccessFul] = useState(false);
     const [generationFailed, setGenerationFailed] = useState(false);
+
+    const localFauxDataLocation = "C:\\Programming_Projects\\my_projects\\faux_data_app\\faux_data_files\\";
 
     const client = axios.create({
         baseURL: "http://localhost:8080/api/v1/entry"
@@ -29,7 +33,8 @@ function Generator() {
                 inputFields: inputFields,
                 rowCount: rowCount,
                 fileType: fileType,
-                tableName: tableName
+                tableName: tableName,
+                fileName: createFileName()
             })
             .then((response) => {
                 setDataEntry([response.data])
@@ -110,11 +115,30 @@ function Generator() {
             alert("Invalid Inputs. Please ensure all data points are not blank.")
         } else {
             setTableName(tableName.trim());
+            createFileName();
             e.preventDefault();
             console.log(inputFields);
             setGenerationLoading(true);
             submitDataEntry(inputFields, rowCount);
         }
+    }
+
+    const createFileName = () => {
+        let file: string = '';
+        let extension: string = '';
+        if (fileType.includes("Excel")) {
+            file = "EXCEL-SHEET";
+            extension = "xlsx"
+        } else if (fileType.includes("MySQL")) {
+            file = "MySQL";
+            extension = "sql"
+        }
+        let currentMillesconds = Date.now();
+        currentMillesconds = currentMillesconds + Math.floor(Math.random() * (1000 - 1 + 1) + 1)
+
+        const generatedFileName = ("faux-data-" + tableName + "_" + file + "_" + currentMillesconds.toString() + "." + extension);
+        setFileName(generatedFileName);
+        return generatedFileName;
     }
 
     const validateColumnInputs = () => {
@@ -208,7 +232,7 @@ function Generator() {
                                 {/* <MenuItem value={'Latitude'}>Latitude</MenuItem>
                                 <MenuItem value={'Longitude'}>Longitude</MenuItem> */}
                                 <hr />
-                                <optgroup label="Date - Past"></optgroup>
+                                <optgroup label="Dates"></optgroup>
                                 <MenuItem value={'Past Date - Up to 2 Days'}>Past Date - Up to 2 Days</MenuItem>
                                 <MenuItem value={'Past Date - Up to 1 Week'}>Past Date - Up to 1 Week</MenuItem>
                                 <MenuItem value={'Past Date - Up to 1 Month'}>Past Date - Up to 1 Month</MenuItem>
@@ -217,8 +241,7 @@ function Generator() {
                                 <MenuItem value={'Past Date - Up to 10 Years'}>Past Date - Up to 10 Years</MenuItem>
                                 <MenuItem value={'Past Date - Up to 25 Years'}>Past Date - Up to 25 Years</MenuItem>
                                 <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
-                                <hr/>
-                                <optgroup label="Date - Future"></optgroup>
+                                {/* <MenuItem value={'Present Day'}>Present Day</MenuItem> */}
                                 <MenuItem value={'Future Date - Up to 2 Days'}>Future Date - Up to 2 Days</MenuItem>
                                 <MenuItem value={'Future Date - Up to 1 Week'}>Future Date - Up to 1 Week</MenuItem>
                                 <MenuItem value={'Future Date - Up to 1 Month'}>Future Date - Up to 1 Month</MenuItem>
@@ -231,13 +254,57 @@ function Generator() {
                                 <optgroup label="Finances"></optgroup>
                                 <MenuItem value={'Money - Positive Only'}>Money - Positive Only</MenuItem>
                                 <MenuItem value={'Money - Positive/Negative'}>Money - Positive/Negative</MenuItem>
+
+                                {/* // need to implement below */}
+                                {/* <MenuItem value={'CCNumber'}>Credit Card Number</MenuItem>
+                                <MenuItem value={'CCExpDate'}>Credit Card Exp Date</MenuItem>
+                                <MenuItem value={'BIC'}>BIC</MenuItem>
+                                <MenuItem value={"CreditScore"}>Credit Score</MenuItem>
+                                <MenuItem>Stock Name</MenuItem>
+                                <MenuItem>Stock Price</MenuItem>
+                                <MenuItem>Stock Symbol</MenuItem>
                                 <hr />
+                                <optgroup label="Financial Transactions"></optgroup>
+                                <MenuItem>Type (Deposit/Withdrawl)</MenuItem>
+                                <MenuItem>Account Type</MenuItem>
+                                <MenuItem>Purchase Category</MenuItem>
+                                <MenuItem>Payment Method</MenuItem>
+                                <MenuItem>Transaction Note</MenuItem>
+                                <MenuItem>Account Name</MenuItem>
+                                <MenuItem>Bank Name</MenuItem>
+                                <MenuItem>Interest Rate</MenuItem>
+                                <hr/> */}
                                 <optgroup label="Numbers"></optgroup>
-                                <MenuItem value={'Positive Numbers'}>Positive Numbers</MenuItem>
+                                <MenuItem value={'Positive Numbers'}>Positive Numbers (0-10000000)</MenuItem>
+                                {/* <MenuItem value={'Negative Numbers'}>Negative Numbers (-10000000-10000000)</MenuItem>
+                                <MenuItem value={'Pos/Neg Numbers'}>Pos/Neg Numbers</MenuItem>
+                                <MenuItem value={'Zero'}>Zero</MenuItem>
+                                <MenuItem value={'0to10'}>Number 0 - 10</MenuItem>
+                                <MenuItem value={'0to100'}>Number 0 - 100</MenuItem>
+                                <MenuItem value={'0to1000'}>Number 0 - 1000</MenuItem>
+                                <MenuItem value={'0to10000'}>Number 0 - 10000</MenuItem>
+                                <MenuItem value={'6 Digit Numbers'}>6 Digit Number</MenuItem>
+                                <MenuItem value={'7 Digit Numbers'}>7 Digit Number</MenuItem>
+                                <MenuItem value={'8 Digit Numbers'}>8 Digit Number</MenuItem>
+                                <MenuItem value={'9 Digit Numbers'}>9 Digit Number</MenuItem>
+                                <MenuItem value={'10 Digit Numbers'}>10 Digit Number</MenuItem>
+                                <MenuItem value={'AlphaNumeric'}>AlphaNumeric</MenuItem> */}
                                 <hr />
+                                {/* <optgroup label="Medical"></optgroup>
+                                <MenuItem>Insurance Name</MenuItem>
+                                <MenuItem>Policy Number</MenuItem>
+                                <MenuItem>Doctor Specialization</MenuItem>
+                                <MenuItem>Reason for Visit</MenuItem>
+                                <MenuItem>Medication Name</MenuItem>
+                                <MenuItem>Medical Dosage</MenuItem>
+                                <MenuItem>Diagnosis</MenuItem>
+                                <MenuItem>Test Result</MenuItem>
+                                <MenuItem>Hospital Role</MenuItem>
+                                <MenuItem>Appointment Status</MenuItem>
+                                <hr /> */}
                                 <optgroup label="Boolean"></optgroup>
-                                <MenuItem value={'True'}>True</MenuItem>
-                                <MenuItem value={'False'}>False</MenuItem>
+                                {/* <MenuItem value={'True'}>True</MenuItem>
+                                <MenuItem value={'False'}>False</MenuItem> */}
                                 <MenuItem value={'True/False'}>True/False</MenuItem>
                             </Select>
 
@@ -305,11 +372,26 @@ function Generator() {
                 {inputFields.length > 0 && <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>Submit</Button>}
                 <br />
                 {generationLoading &&
-                    <CircularProgress />
+                    <>
+                        <CircularProgress />
+                        <h4 style={{ color: 'yellow' }}>File is generating. Please do not refresh your browser.</h4>
+
+                    </>
                 }
                 <br />
                 {generationSuccessFul &&
-                    <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
+
+                    <>
+                        <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
+                        <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
+                        <br/>
+                        <form onSubmit={() => console.log('')}>
+                            <InputLabel htmlFor="my-input">Email address</InputLabel>
+                            <Input type={'email'} id="my-input" aria-describedby="my-helper-text" />
+                            <Button variant="contained" color="primary" style={{marginLeft: '1em'}}>Send File</Button>
+                            <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
+                        </form>
+                    </>
                 }
                 {
                     generationFailed &&
