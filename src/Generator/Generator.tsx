@@ -4,6 +4,7 @@ import axios from "axios";
 import { Box, Button, CircularProgress, colors, Divider, FormHelperText, Input, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import Landing from "../Landing/Landing";
 import { saveAs } from "file-saver"
+import Emailer from "../Emailer/Emailer";
 
 function Generator() {
 
@@ -20,6 +21,8 @@ function Generator() {
     const [generationLoading, setGenerationLoading] = useState(false);
     const [generationSuccessFul, setGenerationSuccessFul] = useState(false);
     const [generationFailed, setGenerationFailed] = useState(false);
+
+    
 
     const localFauxDataLocation = "C:\\Programming_Projects\\my_projects\\faux_data_app\\faux_data_files\\";
 
@@ -56,12 +59,16 @@ function Generator() {
         let data = [...inputFields];
         data[index].columnName = event.target.value;
         setInputFields(data);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
 
     const handleDataTypeChange = (index: any, event: any) => {
         let data = [...inputFields];
         data[index].datatype = event.target.value;
         setInputFields(data);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
 
     const handleIsRequiredChange = (index: any, event: any) => {
@@ -73,30 +80,44 @@ function Generator() {
             setisRequired(event.target.value)
         }
         setInputFields(data);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
 
     const handleRowCountChange = (event: any) => {
         setRowCount(event.target.value);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
 
     const handleFileTypeChange = (event: any) => {
         setFileType(event.target.value);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
 
     const handleTableNameChange = (event: any) => {
         setTableName(event.target.value);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
 
     const addFields = () => {
         let newField = { columnName: '', datatype: '', isRequired: '' };
         setInputFields([...inputFields, newField]);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
 
     const removeField = (index: number) => {
         let newField = [...inputFields];
         newField.splice(index, 1);
         setInputFields(newField);
+        setGenerationFailed(false);
+        setGenerationSuccessFul(false);
     }
+
+    
 
     const submit = (e: any) => {
         setGenerationSuccessFul(false);
@@ -155,6 +176,10 @@ function Generator() {
             }
         }
         return isInputValid;
+    }
+
+    const createAuditRecord = (filename: string, email: string) => {
+
     }
 
     return (
@@ -368,9 +393,16 @@ function Generator() {
                     </div>
 
                 }
+                <br/>
+                {inputFields.length > 0 && <>
+                    <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>
+                        <i className="material-icons">play_arrow</i>
+                        Generate
+                        </Button>
+                </>}
                 <br />
-                {inputFields.length > 0 && <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>Submit</Button>}
-                <br />
+            </form>
+            <br />
                 {generationLoading &&
                     <>
                         <CircularProgress />
@@ -380,17 +412,11 @@ function Generator() {
                 }
                 <br />
                 {generationSuccessFul &&
-
                     <>
                         <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
-                        <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
-                        <br/>
-                        <form onSubmit={() => console.log('')}>
-                            <InputLabel htmlFor="my-input">Email address</InputLabel>
-                            <Input type={'email'} id="my-input" aria-describedby="my-helper-text" />
-                            <Button variant="contained" color="primary" style={{marginLeft: '1em'}}>Send File</Button>
-                            <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
-                        </form>
+                        {/* <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
+                        <br/> */}
+                        <Emailer fileName={fileName}/>
                     </>
                 }
                 {
@@ -398,7 +424,6 @@ function Generator() {
                     <h3 className={'failed_generation'}>We could not generate your {fileType}. Please contact the IT Department.</h3>
                 }
                 <br />
-            </form>
             <hr />
         </div>
     )
