@@ -1,9 +1,10 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { Link, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Link, Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomePage from "../HomePage/HomePage";
 import Generator from "../Generator/Generator";
 import './NavbarMenu.css'
+import RetrieveFile from "../RetrieveFile/RetrieveFile";
 
 function NavbarMenu() {
     return (
@@ -16,11 +17,12 @@ function NavbarMenu() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
+                            <Nav.Link href="/">Home</Nav.Link>
                             <Nav.Link href="/generator">Generator</Nav.Link>
                             {/* <Nav.Link>
                                 <Link to="/generator">Generator</Link>
                             </Nav.Link> */}
-                            <NavDropdown className={'float_right'} title="Dropdown" id="basic-nav-dropdown">
+                            {/* <NavDropdown className={'float_right'} title="Dropdown" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.2">
                                     Another action
@@ -30,7 +32,7 @@ function NavbarMenu() {
                                 <NavDropdown.Item href="#action/3.4">
                                     Separated link
                                 </NavDropdown.Item>
-                            </NavDropdown>
+                            </NavDropdown> */}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -38,6 +40,8 @@ function NavbarMenu() {
             <Routes>
                 <Route path="/" element={<HomePage />}></Route>
                 <Route path="generator" element={<Generator />}></Route>
+                <Route path="retriever" element={<RetrieveFile/>}></Route>
+                <Route path="*" element={<Navigate to={'/'}/>}></Route>
             </Routes>
         </div>
     );

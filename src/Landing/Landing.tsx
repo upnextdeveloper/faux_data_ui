@@ -5,13 +5,10 @@ import './Landing.css'
 function Landing() {
     return (
         <div>
-            <Box sx={{width: '90%'}}>
-                <Typography align="center" variant="h3" gutterBottom>
-                    Use <span style={{fontStyle: 'italic', color:'yellow'}}>FauxData</span> to generate random data for you.
-                </Typography>
-            </Box>
-            <Box sx={{ width: '60%' }}>
-                <div className="directions">
+            <Typography align="center" variant="h3" gutterBottom>
+                Use <span style={{ fontStyle: 'italic', color: 'white' }}>FauxData</span> to generate random data for you.
+            </Typography>
+            <div className="directions">
                 <h5>How to use FauxData:</h5>
                 <br />
                 <p>1. Enter the name of your table's column</p>
@@ -21,8 +18,6 @@ function Landing() {
                 <p>5. Select the number of rows to generate for you</p>
                 <p>6. Finally, press the 'Submit' button to generate</p>
                 </div>
-                <hr />
-            </Box>
             <br />
         </div>
     )

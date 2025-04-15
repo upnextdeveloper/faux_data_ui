@@ -2,6 +2,15 @@
     float:right;
 }
 
+.fd_btn{
+    font-size: xx-large;
+    padding-bottom: 0.4em;
+}
+
+.me-auto {
+    font-size: large;
+}
+
 @media (max-width:320px)  { 
     /* smartphones, iPhone, portrait 480x320 phones */ 
     .fd_btn {

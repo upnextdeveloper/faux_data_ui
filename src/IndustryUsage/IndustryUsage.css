@@ -1,0 +1,26 @@
+li {
+    list-style: none;
+    background-color: lightblue;
+    font-size: x-large;
+    font-weight: bolder;
+    color: white;
+    padding: 0.5em;
+}
+
+.header {
+    font-size: xx-large;
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+.left {
+    text-align: left;
+    align-items: left;
+}
+
+.right {
+    text-align: right;
+    align-items: right;
+    
+}
+
