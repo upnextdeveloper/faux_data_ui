@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import './Generator.css'
 import axios from "axios";
-import { Box, Button, CircularProgress, colors, Divider, FormHelperText, Input, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, colors, Divider, FormHelperText, Input, InputLabel, MenuItem, Select, Stack, Switch, TextField, Typography } from "@mui/material";
 import Landing from "../Landing/Landing";
 import { saveAs } from "file-saver"
-import Emailer from "../Emailer/Emailer";
+import Downloader from "../Downloader/Downloader";
+import { AgGridReact } from "ag-grid-react";
 
 function Generator() {
 
@@ -18,17 +19,33 @@ function Generator() {
     const [rowCount, setRowCount] = useState(0);
     const [fileType, setFileType] = useState('');
     const [fileName, setFileName] = useState('');
+    const [cost, setCost] = useState(0.00);
     const [generationLoading, setGenerationLoading] = useState(false);
     const [generationSuccessFul, setGenerationSuccessFul] = useState(false);
     const [generationFailed, setGenerationFailed] = useState(false);
 
-    
+
 
     const localFauxDataLocation = "C:\\Programming_Projects\\my_projects\\faux_data_app\\faux_data_files\\";
 
     const client = axios.create({
         baseURL: "http://localhost:8080/api/v1/entry"
     })
+
+    const FILETYPE = {
+        excel: 'Excel File',
+        MySQL: 'MySQL File'
+
+    }
+
+    const ROWCOUNT = {
+        thousand: 1000,
+        tenthousand: 10000,
+        fifthousand: 50000,
+        hunthousand: 100000,
+        fivehunthousand: 500000,
+        million: 1000000
+    }
 
     const submitDataEntry = (inputFields: any, rowCount: number) => {
         client
@@ -43,6 +60,7 @@ function Generator() {
                 setDataEntry([response.data])
                 setGenerationSuccessFul(true);
                 setGenerationFailed(false);
+                calculateCost(fileType,rowCount);
             }).catch(
                 function (error) {
                     setGenerationSuccessFul(false);
@@ -53,6 +71,34 @@ function Generator() {
                     setGenerationLoading(false);
                 }
             )
+    }
+
+    const calculateCost = (fileType: String, rowCount: Number) => {
+        let cost = 0;
+        if(fileType == FILETYPE.MySQL){
+            cost = cost + 0.10
+        }else if(fileType == FILETYPE.excel){
+            cost = cost + 0.15
+        }
+
+        if(rowCount == ROWCOUNT.thousand){
+            cost = cost + 1.99
+        }else if(rowCount == ROWCOUNT.tenthousand){
+            cost = cost + 3.99
+        }else if(rowCount == ROWCOUNT.fifthousand){
+            cost = cost + 5.99
+        }else if(rowCount == ROWCOUNT.hunthousand){
+            cost = cost + 7.99
+        }else if(rowCount == ROWCOUNT.fivehunthousand){
+            cost = cost + 9.99
+        }else if(rowCount == ROWCOUNT.million){
+            cost = cost + 11.99
+        }
+
+        cost = Math.round(cost * 100) / 100
+
+        setCost(cost);
+
     }
 
     const handleFormChange = (index: any, event: any) => {
@@ -117,7 +163,7 @@ function Generator() {
         setGenerationSuccessFul(false);
     }
 
-    
+
 
     const submit = (e: any) => {
         setGenerationSuccessFul(false);
@@ -176,10 +222,6 @@ function Generator() {
             }
         }
         return isInputValid;
-    }
-
-    const createAuditRecord = (filename: string, email: string) => {
-
     }
 
     return (
@@ -348,8 +390,10 @@ function Generator() {
                                 <MenuItem value={'Y'}>Yes</MenuItem>
                                 <MenuItem value={'N'}>No</MenuItem>
                             </Select>
+                            {/* <label>is required</label>
+                            <Switch defaultChecked /> */}
 
-                            <Button variant="contained" color="error" className={'removeButton'} onClick={() => removeField(index)}>-</Button>
+                            <Button variant="contained" color="error" className={'removeButton'} onClick={() => removeField(index)}>X</Button>
                             <br />
                         </div>
                     )
@@ -357,7 +401,7 @@ function Generator() {
                 <br />
 
                 <Button variant="contained" className={'addButton'} onClick={addFields}>+ Column</Button><br /><br />
-
+                
                 <br />
                 {inputFields.length != 0
                     &&
@@ -389,41 +433,43 @@ function Generator() {
                         >
                             <MenuItem value={'Excel File'}>Excel File</MenuItem>
                             <MenuItem value={'MySQL File'}>MySQL File</MenuItem>
+                            <MenuItem value={'JSON File'}>JSON File</MenuItem>
+                            <MenuItem value={'XML File'}>XML File</MenuItem>
                         </Select>
                     </div>
 
                 }
-                <br/>
+                <br />
                 {inputFields.length > 0 && <>
                     <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>
                         <i className="material-icons">play_arrow</i>
                         Generate
-                        </Button>
+                    </Button>
                 </>}
                 <br />
             </form>
             <br />
-                {generationLoading &&
-                    <>
-                        <CircularProgress />
-                        <h4 style={{ color: 'yellow' }}>File is generating. Please do not refresh your browser.</h4>
+            {generationLoading &&
+                <>
+                    <CircularProgress />
+                    <h4 style={{ color: 'yellow' }}>File is generating. Please do not refresh your browser.</h4>
 
-                    </>
-                }
-                <br />
-                {generationSuccessFul &&
-                    <>
-                        <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
-                        {/* <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
+                </>
+            }
+            <br />
+            {generationSuccessFul &&
+                <>
+                    <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
+                    {/* <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
                         <br/> */}
-                        <Emailer fileName={fileName}/>
-                    </>
-                }
-                {
-                    generationFailed &&
-                    <h3 className={'failed_generation'}>We could not generate your {fileType}. Please contact the IT Department.</h3>
-                }
-                <br />
+                    <Downloader fileName={fileName} cost={cost} />
+                </>
+            }
+            {
+                generationFailed &&
+                <h3 className={'failed_generation'}>We could not generate your {fileType}. Please contact the IT Department.</h3>
+            }
+            <br />
             <hr />
         </div>
     )
