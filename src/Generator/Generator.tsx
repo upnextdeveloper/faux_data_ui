@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import './Generator.css'
 import axios from "axios";
-import { Box, Button, CircularProgress, colors, Divider, FormHelperText, Input, InputLabel, MenuItem, Select, Stack, Switch, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, colors, Divider, FormHelperText, Input, InputLabel, List, MenuItem, Select, Stack, Switch, TextField, Typography } from "@mui/material";
 import Landing from "../Landing/Landing";
 import { saveAs } from "file-saver"
 import Downloader from "../Downloader/Downloader";
-import { AgGridReact } from "ag-grid-react";
 
 function Generator() {
 
@@ -23,8 +22,6 @@ function Generator() {
     const [generationLoading, setGenerationLoading] = useState(false);
     const [generationSuccessFul, setGenerationSuccessFul] = useState(false);
     const [generationFailed, setGenerationFailed] = useState(false);
-
-
 
     const localFauxDataLocation = "C:\\Programming_Projects\\my_projects\\faux_data_app\\faux_data_files\\";
 
@@ -60,7 +57,7 @@ function Generator() {
                 setDataEntry([response.data])
                 setGenerationSuccessFul(true);
                 setGenerationFailed(false);
-                calculateCost(fileType,rowCount);
+                calculateCost(fileType, rowCount);
             }).catch(
                 function (error) {
                     setGenerationSuccessFul(false);
@@ -75,23 +72,23 @@ function Generator() {
 
     const calculateCost = (fileType: String, rowCount: Number) => {
         let cost = 0;
-        if(fileType == FILETYPE.MySQL){
+        if (fileType == FILETYPE.MySQL) {
             cost = cost + 0.10
-        }else if(fileType == FILETYPE.excel){
+        } else if (fileType == FILETYPE.excel) {
             cost = cost + 0.15
         }
 
-        if(rowCount == ROWCOUNT.thousand){
+        if (rowCount == ROWCOUNT.thousand) {
             cost = cost + 1.99
-        }else if(rowCount == ROWCOUNT.tenthousand){
+        } else if (rowCount == ROWCOUNT.tenthousand) {
             cost = cost + 3.99
-        }else if(rowCount == ROWCOUNT.fifthousand){
+        } else if (rowCount == ROWCOUNT.fifthousand) {
             cost = cost + 5.99
-        }else if(rowCount == ROWCOUNT.hunthousand){
+        } else if (rowCount == ROWCOUNT.hunthousand) {
             cost = cost + 7.99
-        }else if(rowCount == ROWCOUNT.fivehunthousand){
+        } else if (rowCount == ROWCOUNT.fivehunthousand) {
             cost = cost + 9.99
-        }else if(rowCount == ROWCOUNT.million){
+        } else if (rowCount == ROWCOUNT.million) {
             cost = cost + 11.99
         }
 
@@ -225,105 +222,106 @@ function Generator() {
     }
 
     return (
-        <div className={'backdrop'}>
-            <Typography align="center" variant="h2" gutterBottom>
-                <span style={{ fontStyle: 'italic', color: 'white' }}>FauxData</span> - Random Data Generator
-            </Typography>
-            <Landing />
-            {inputFields.length == 0 && <h3>Click 'Add' to create your first row</h3>}
-            <InputLabel id="demo-simple-select-label">Table Name</InputLabel>
-            <br />
-            <TextField type="text"
-                placeholder="Table Name"
-                name="tableName"
-                onChange={(e) => handleTableNameChange(e)}
-                id="outlined-basic"
-                label="Table Name"
-                variant="outlined"
-            />
-            <br />
-            <br />
-            <br />
-            <form onSubmit={submit}>
-                {inputFields.map((input, index) => {
-                    return (
-                        <div key={index}>
-                            <hr />
-                            <br />
-                            <h6 className={'datainputrowcount'}>{index + 1}</h6>
-                            <TextField className={'datainputrow'} type="text"
-                                value={input.columnName}
-                                placeholder="Column Name"
-                                name="Column Name"
-                                onChange={(e) => handleFormChange(index, e)}
-                                id="outlined-basic"
-                                label="Column Name"
-                                variant="filled" />
-                            <span className="sep_span"></span>
-                            <Select
-                                value={input.datatype}
-                                name="datatype"
-                                displayEmpty
-                                onChange={(e) => handleDataTypeChange(index, e)}
-                                labelId="demo-simple-select-label"
-                                className={'datainputrow'}
-                                label="Data Type"
-                            >
-                                <MenuItem disabled value="">
-                                    <em>Data Type</em>
-                                </MenuItem>
-                                <optgroup label="Identification"></optgroup>
-                                <MenuItem value={'Identification Number'}>Identification Number</MenuItem>
-                                <MenuItem value={'Username'}>Username</MenuItem>
+        <>
+            <div className={'backdrop'}>
+                <Typography align="center" variant="h2" gutterBottom>
+                    <span style={{ fontStyle: 'italic', color: 'white' }}>FauxData</span> - Random Data Generator
+                </Typography>
+                <Landing />
+                {inputFields.length == 0 && <h3>Click 'Add' to create your first row</h3>}
+                <InputLabel id="demo-simple-select-label">Table Name</InputLabel>
+                <br />
+                <TextField type="text"
+                    placeholder="Table Name"
+                    name="tableName"
+                    onChange={(e) => handleTableNameChange(e)}
+                    id="outlined-basic"
+                    label="Table Name"
+                    variant="outlined"
+                />
+                <br />
+                <br />
+                <br />
+                <form onSubmit={submit}>
+                    {inputFields.map((input, index) => {
+                        return (
+                            <div key={index}>
                                 <hr />
-                                <optgroup label="Person"></optgroup>
-                                <MenuItem value={'First Name'}>First Name</MenuItem>
-                                <MenuItem value={'Middle Name'}>Middle Name</MenuItem>
-                                <MenuItem value={'Last Name'}>Last Name</MenuItem>
-                                <MenuItem value={'Age'}>Age</MenuItem>
-                                <MenuItem value={'Gender'}>Gender</MenuItem>
-                                <MenuItem value={'Birthday'}>Birthday</MenuItem>
-                                <MenuItem value={'Race'}>Race</MenuItem>
-                                <MenuItem value={'Marital Status'}>Marital Status</MenuItem>
-                                <MenuItem value={'Current Education'}>Current Education</MenuItem>
-                                <MenuItem value={'Email'}>Email</MenuItem>
-                                <MenuItem value={'Phone Number'}>Phone Number</MenuItem>
-                                <hr />
-                                <optgroup label="Location"></optgroup>
-                                <MenuItem value={'Street'}>Street</MenuItem>
-                                <MenuItem value={'City'}>City - US</MenuItem>
-                                <MenuItem value={'State'}>State - US</MenuItem>
-                                <MenuItem value={'State Abbreviation'}>State Abbreviation - US</MenuItem>
-                                <MenuItem value={'Zip Code'}>Zip Code</MenuItem>
-                                {/* To implement soon */}
-                                {/* <MenuItem value={'Latitude'}>Latitude</MenuItem>
+                                <br />
+                                <h6 className={'datainputrowcount'}>{index + 1}</h6>
+                                <TextField className={'datainputrow'} type="text"
+                                    value={input.columnName}
+                                    placeholder="Column Name"
+                                    name="Column Name"
+                                    onChange={(e) => handleFormChange(index, e)}
+                                    id="outlined-basic"
+                                    label="Column Name"
+                                    variant="filled" />
+                                <span className="sep_span"></span>
+                                <Select
+                                    value={input.datatype}
+                                    name="datatype"
+                                    displayEmpty
+                                    onChange={(e) => handleDataTypeChange(index, e)}
+                                    labelId="demo-simple-select-label"
+                                    className={'datainputrow'}
+                                    label="Data Type"
+                                >
+                                    <MenuItem disabled value="">
+                                        <em>Data Type</em>
+                                    </MenuItem>
+                                    <optgroup label="Identification"></optgroup>
+                                    <MenuItem value={'Identification Number'}>Identification Number</MenuItem>
+                                    <MenuItem value={'Username'}>Username</MenuItem>
+                                    <hr />
+                                    <optgroup label="Person"></optgroup>
+                                    <MenuItem value={'First Name'}>First Name</MenuItem>
+                                    <MenuItem value={'Middle Name'}>Middle Name</MenuItem>
+                                    <MenuItem value={'Last Name'}>Last Name</MenuItem>
+                                    <MenuItem value={'Age'}>Age</MenuItem>
+                                    <MenuItem value={'Gender'}>Gender</MenuItem>
+                                    <MenuItem value={'Birthday'}>Birthday</MenuItem>
+                                    <MenuItem value={'Race'}>Race</MenuItem>
+                                    <MenuItem value={'Marital Status'}>Marital Status</MenuItem>
+                                    <MenuItem value={'Current Education'}>Current Education</MenuItem>
+                                    <MenuItem value={'Email'}>Email</MenuItem>
+                                    <MenuItem value={'Phone Number'}>Phone Number</MenuItem>
+                                    <hr />
+                                    <optgroup label="Location"></optgroup>
+                                    <MenuItem value={'Street'}>Street</MenuItem>
+                                    <MenuItem value={'City'}>City - US</MenuItem>
+                                    <MenuItem value={'State'}>State - US</MenuItem>
+                                    <MenuItem value={'State Abbreviation'}>State Abbreviation - US</MenuItem>
+                                    <MenuItem value={'Zip Code'}>Zip Code</MenuItem>
+                                    {/* To implement soon */}
+                                    {/* <MenuItem value={'Latitude'}>Latitude</MenuItem>
                                 <MenuItem value={'Longitude'}>Longitude</MenuItem> */}
-                                <hr />
-                                <optgroup label="Dates"></optgroup>
-                                <MenuItem value={'Past Date - Up to 2 Days'}>Past Date - Up to 2 Days</MenuItem>
-                                <MenuItem value={'Past Date - Up to 1 Week'}>Past Date - Up to 1 Week</MenuItem>
-                                <MenuItem value={'Past Date - Up to 1 Month'}>Past Date - Up to 1 Month</MenuItem>
-                                <MenuItem value={'Past Date - Up to 6 Months'}>Past Date - Up to 6 Months</MenuItem>
-                                <MenuItem value={'Past Date - Up to 1 Year'}>Past Date - Up to 1 Year</MenuItem>
-                                <MenuItem value={'Past Date - Up to 10 Years'}>Past Date - Up to 10 Years</MenuItem>
-                                <MenuItem value={'Past Date - Up to 25 Years'}>Past Date - Up to 25 Years</MenuItem>
-                                <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
-                                {/* <MenuItem value={'Present Day'}>Present Day</MenuItem> */}
-                                <MenuItem value={'Future Date - Up to 2 Days'}>Future Date - Up to 2 Days</MenuItem>
-                                <MenuItem value={'Future Date - Up to 1 Week'}>Future Date - Up to 1 Week</MenuItem>
-                                <MenuItem value={'Future Date - Up to 1 Month'}>Future Date - Up to 1 Month</MenuItem>
-                                <MenuItem value={'Future Date - Up to 6 Months'}>Future Date - Up to 6 Months</MenuItem>
-                                <MenuItem value={'Future Date - Up to 1 Year'}>Future Date - Up to 1 Year</MenuItem>
-                                <MenuItem value={'Future Date - Up to 10 Years'}>Future Date - Up to 10 Years</MenuItem>
-                                <MenuItem value={'Future Date - Up to 25 Years'}>Future Date - Up to 25 Years</MenuItem>
-                                <MenuItem value={'Future Date - Up to 50 Years'}>Future Date - Up to 50 Years</MenuItem>
-                                <hr />
-                                <optgroup label="Finances"></optgroup>
-                                <MenuItem value={'Money - Positive Only'}>Money - Positive Only</MenuItem>
-                                <MenuItem value={'Money - Positive/Negative'}>Money - Positive/Negative</MenuItem>
+                                    <hr />
+                                    <optgroup label="Dates"></optgroup>
+                                    <MenuItem value={'Past Date - Up to 2 Days'}>Past Date - Up to 2 Days</MenuItem>
+                                    <MenuItem value={'Past Date - Up to 1 Week'}>Past Date - Up to 1 Week</MenuItem>
+                                    <MenuItem value={'Past Date - Up to 1 Month'}>Past Date - Up to 1 Month</MenuItem>
+                                    <MenuItem value={'Past Date - Up to 6 Months'}>Past Date - Up to 6 Months</MenuItem>
+                                    <MenuItem value={'Past Date - Up to 1 Year'}>Past Date - Up to 1 Year</MenuItem>
+                                    <MenuItem value={'Past Date - Up to 10 Years'}>Past Date - Up to 10 Years</MenuItem>
+                                    <MenuItem value={'Past Date - Up to 25 Years'}>Past Date - Up to 25 Years</MenuItem>
+                                    <MenuItem value={'Past Date - Up to 50 Years'}>Past Date - Up to 50 Years</MenuItem>
+                                    {/* <MenuItem value={'Present Day'}>Present Day</MenuItem> */}
+                                    <MenuItem value={'Future Date - Up to 2 Days'}>Future Date - Up to 2 Days</MenuItem>
+                                    <MenuItem value={'Future Date - Up to 1 Week'}>Future Date - Up to 1 Week</MenuItem>
+                                    <MenuItem value={'Future Date - Up to 1 Month'}>Future Date - Up to 1 Month</MenuItem>
+                                    <MenuItem value={'Future Date - Up to 6 Months'}>Future Date - Up to 6 Months</MenuItem>
+                                    <MenuItem value={'Future Date - Up to 1 Year'}>Future Date - Up to 1 Year</MenuItem>
+                                    <MenuItem value={'Future Date - Up to 10 Years'}>Future Date - Up to 10 Years</MenuItem>
+                                    <MenuItem value={'Future Date - Up to 25 Years'}>Future Date - Up to 25 Years</MenuItem>
+                                    <MenuItem value={'Future Date - Up to 50 Years'}>Future Date - Up to 50 Years</MenuItem>
+                                    <hr />
+                                    <optgroup label="Finances"></optgroup>
+                                    <MenuItem value={'Money - Positive Only'}>Money - Positive Only</MenuItem>
+                                    <MenuItem value={'Money - Positive/Negative'}>Money - Positive/Negative</MenuItem>
 
-                                {/* // need to implement below */}
-                                {/* <MenuItem value={'CCNumber'}>Credit Card Number</MenuItem>
+                                    {/* // need to implement below */}
+                                    {/* <MenuItem value={'CCNumber'}>Credit Card Number</MenuItem>
                                 <MenuItem value={'CCExpDate'}>Credit Card Exp Date</MenuItem>
                                 <MenuItem value={'BIC'}>BIC</MenuItem>
                                 <MenuItem value={"CreditScore"}>Credit Score</MenuItem>
@@ -341,9 +339,9 @@ function Generator() {
                                 <MenuItem>Bank Name</MenuItem>
                                 <MenuItem>Interest Rate</MenuItem>
                                 <hr/> */}
-                                <optgroup label="Numbers"></optgroup>
-                                <MenuItem value={'Positive Numbers'}>Positive Numbers (0-10000000)</MenuItem>
-                                {/* <MenuItem value={'Negative Numbers'}>Negative Numbers (-10000000-10000000)</MenuItem>
+                                    <optgroup label="Numbers"></optgroup>
+                                    <MenuItem value={'Positive Numbers'}>Positive Numbers (0-10000000)</MenuItem>
+                                    {/* <MenuItem value={'Negative Numbers'}>Negative Numbers (-10000000-10000000)</MenuItem>
                                 <MenuItem value={'Pos/Neg Numbers'}>Pos/Neg Numbers</MenuItem>
                                 <MenuItem value={'Zero'}>Zero</MenuItem>
                                 <MenuItem value={'0to10'}>Number 0 - 10</MenuItem>
@@ -356,8 +354,8 @@ function Generator() {
                                 <MenuItem value={'9 Digit Numbers'}>9 Digit Number</MenuItem>
                                 <MenuItem value={'10 Digit Numbers'}>10 Digit Number</MenuItem>
                                 <MenuItem value={'AlphaNumeric'}>AlphaNumeric</MenuItem> */}
-                                <hr />
-                                {/* <optgroup label="Medical"></optgroup>
+                                    <hr />
+                                    {/* <optgroup label="Medical"></optgroup>
                                 <MenuItem>Insurance Name</MenuItem>
                                 <MenuItem>Policy Number</MenuItem>
                                 <MenuItem>Doctor Specialization</MenuItem>
@@ -369,109 +367,110 @@ function Generator() {
                                 <MenuItem>Hospital Role</MenuItem>
                                 <MenuItem>Appointment Status</MenuItem>
                                 <hr /> */}
-                                <optgroup label="Boolean"></optgroup>
-                                {/* <MenuItem value={'True'}>True</MenuItem>
+                                    <optgroup label="Boolean"></optgroup>
+                                    {/* <MenuItem value={'True'}>True</MenuItem>
                                 <MenuItem value={'False'}>False</MenuItem> */}
-                                <MenuItem value={'True/False'}>True/False</MenuItem>
-                            </Select>
+                                    <MenuItem value={'True/False'}>True/False</MenuItem>
+                                </Select>
 
-                            <Select
-                                id="isRequired"
-                                displayEmpty
-                                value={input.isRequired}
-                                name="isRequired"
-                                onChange={(e) => handleIsRequiredChange(index, e)}
-                                className={'datarequiredinput'}
-                                label="Required?"
-                            >
-                                <MenuItem disabled value="">
-                                    <em>Required?</em>
-                                </MenuItem>
-                                <MenuItem value={'Y'}>Yes</MenuItem>
-                                <MenuItem value={'N'}>No</MenuItem>
-                            </Select>
-                            {/* <label>is required</label>
+                                <Select
+                                    id="isRequired"
+                                    displayEmpty
+                                    value={input.isRequired}
+                                    name="isRequired"
+                                    onChange={(e) => handleIsRequiredChange(index, e)}
+                                    className={'datarequiredinput'}
+                                    label="Required?"
+                                >
+                                    <MenuItem disabled value="">
+                                        <em>Required?</em>
+                                    </MenuItem>
+                                    <MenuItem value={'Y'}>Yes</MenuItem>
+                                    <MenuItem value={'N'}>No</MenuItem>
+                                </Select>
+                                {/* <label>is required</label>
                             <Switch defaultChecked /> */}
 
-                            <Button variant="contained" color="error" className={'removeButton'} onClick={() => removeField(index)}>X</Button>
-                            <br />
-                        </div>
-                    )
-                })}
-                <br />
+                                <Button variant="contained" color="error" className={'removeButton'} onClick={() => removeField(index)}>X</Button>
+                                <br />
+                            </div>
+                        )
+                    })}
+                    <br />
 
-                <Button variant="contained" className={'addButton'} onClick={addFields}>+ Column</Button><br /><br />
-                
-                <br />
-                {inputFields.length != 0
-                    &&
-                    <div>
-                        <InputLabel id="demo-simple-select-label"># of Rows</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={rowCount}
-                            label="Row Count"
-                            onChange={(e) => handleRowCountChange(e)}
-                        >
-                            {/* <MenuItem value={10}>Ten (10)</MenuItem>
+                    <Button variant="contained" className={'addButton'} onClick={addFields}>+ Column</Button><br /><br />
+
+                    <br />
+                    {inputFields.length != 0
+                        &&
+                        <div>
+                            <InputLabel id="demo-simple-select-label"># of Rows</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={rowCount}
+                                label="Row Count"
+                                onChange={(e) => handleRowCountChange(e)}
+                            >
+                                {/* <MenuItem value={10}>Ten (10)</MenuItem>
                             <MenuItem value={100}>One Hundred (100)</MenuItem> */}
-                            <MenuItem value={1000}>One Thousand (1000)</MenuItem>
-                            <MenuItem value={10000}>Ten Thousand (10000)</MenuItem>
-                            <MenuItem value={50000}>Fifty Thousand (50000)</MenuItem>
-                            <MenuItem value={100000}>One Hundred Thousand (100000)</MenuItem>
-                            <MenuItem value={500000}>Five Hundred Thousand (500000)</MenuItem>
-                            <MenuItem value={1000000}>One Million (1000000)</MenuItem>
-                        </Select>
-                        <br /><br />
-                        <InputLabel id="demo-simple-select-label">Export File Type</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={fileType}
-                            onChange={(e) => handleFileTypeChange(e)}
-                        >
-                            <MenuItem value={'Excel File'}>Excel File</MenuItem>
-                            <MenuItem value={'MySQL File'}>MySQL File</MenuItem>
-                            <MenuItem value={'JSON File'}>JSON File</MenuItem>
-                            <MenuItem value={'XML File'}>XML File</MenuItem>
-                        </Select>
-                    </div>
+                                <MenuItem value={1000}>One Thousand (1000)</MenuItem>
+                                <MenuItem value={10000}>Ten Thousand (10000)</MenuItem>
+                                <MenuItem value={50000}>Fifty Thousand (50000)</MenuItem>
+                                <MenuItem value={100000}>One Hundred Thousand (100000)</MenuItem>
+                                <MenuItem value={500000}>Five Hundred Thousand (500000)</MenuItem>
+                                <MenuItem value={1000000}>One Million (1000000)</MenuItem>
+                            </Select>
+                            <br /><br />
+                            <InputLabel id="demo-simple-select-label">Export File Type</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={fileType}
+                                onChange={(e) => handleFileTypeChange(e)}
+                            >
+                                <MenuItem value={'Excel File'}>Excel File</MenuItem>
+                                <MenuItem value={'MySQL File'}>MySQL File</MenuItem>
+                                <MenuItem value={'JSON File'}>JSON File</MenuItem>
+                                <MenuItem value={'XML File'}>XML File</MenuItem>
+                            </Select>
+                        </div>
 
+                    }
+                    <br />
+                    {inputFields.length > 0 && <>
+                        <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>
+                            <i className="material-icons">play_arrow</i>
+                            Generate
+                        </Button>
+                    </>}
+                    <br />
+                </form>
+                <br />
+                {generationLoading &&
+                    <>
+                        <CircularProgress />
+                        <h4 style={{ color: 'yellow' }}>File is generating. Please do not refresh your browser.</h4>
+
+                    </>
                 }
                 <br />
-                {inputFields.length > 0 && <>
-                    <Button variant="contained" color="success" onClick={submit} className={'submitButton'}>
-                        <i className="material-icons">play_arrow</i>
-                        Generate
-                    </Button>
-                </>}
-                <br />
-            </form>
-            <br />
-            {generationLoading &&
-                <>
-                    <CircularProgress />
-                    <h4 style={{ color: 'yellow' }}>File is generating. Please do not refresh your browser.</h4>
-
-                </>
-            }
-            <br />
-            {generationSuccessFul &&
-                <>
-                    <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
-                    {/* <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
+                {generationSuccessFul &&
+                    <>
+                        <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
+                        {/* <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
                         <br/> */}
-                    <Downloader fileName={fileName} cost={cost} />
-                </>
-            }
-            {
-                generationFailed &&
-                <h3 className={'failed_generation'}>We could not generate your {fileType}. Please contact the IT Department.</h3>
-            }
-            <br />
-            <hr />
-        </div>
+                        <Downloader fileName={fileName} cost={cost} />
+                    </>
+                }
+                {
+                    generationFailed &&
+                    <h3 className={'failed_generation'}>We could not generate your {fileType}. Please contact the IT Department.</h3>
+                }
+                <br />
+                <hr />
+            </div>
+        </>
     )
 }
 
