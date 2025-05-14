@@ -1,12 +1,15 @@
 {
-  "name": "faux_data",
+  "name": "faux_data_ui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.6",
-    "ag-grid-react": "^33.0.4",
+    "@stripe/react-stripe-js": "^3.6.0",
+    "@stripe/stripe-js": "^7.2.0",
+    "@tanstack/react-table": "^8.21.3",
+    "ag-grid-react": "^33.2.4",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",

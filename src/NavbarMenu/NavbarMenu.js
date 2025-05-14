@@ -3,6 +3,7 @@ import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link, Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import HomePage from "../HomePage/HomePage";
 import Generator from "../Generator/Generator";
+import Projects from "../Projects/Projects"
 import './NavbarMenu.css'
 import RetrieveFile from "../RetrieveFile/RetrieveFile";
 
@@ -18,6 +19,7 @@ function NavbarMenu() {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
                             <Nav.Link href="/">Home</Nav.Link>
+                            <Nav.Link href="projects">Projects</Nav.Link>
                             <Nav.Link href="/generator">Generator</Nav.Link>
                             {/* <Nav.Link>
                                 <Link to="/generator">Generator</Link>
@@ -40,6 +42,7 @@ function NavbarMenu() {
             <Routes>
                 <Route path="/" element={<HomePage />}></Route>
                 <Route path="generator" element={<Generator />}></Route>
+                <Route path="projects" element={<Projects />}></Route>
                 <Route path="retriever" element={<RetrieveFile/>}></Route>
                 <Route path="*" element={<Navigate to={'/'}/>}></Route>
             </Routes>
