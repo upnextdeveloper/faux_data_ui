@@ -5,6 +5,8 @@ import { Box, Button, CircularProgress, colors, Divider, FormHelperText, Input, 
 import Landing from "../Landing/Landing";
 import { saveAs } from "file-saver"
 import Downloader from "../Downloader/Downloader";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 function Generator() {
 
@@ -160,6 +162,61 @@ function Generator() {
         setGenerationSuccessFul(false);
     }
 
+    const moveColumnUp = (index: number) => {
+        if (inputFields.length <= 1) {
+            return
+        }
+        else {
+            if (inputFields.length == 2) {
+                let currentRow = inputFields.at(index);
+                let rowAboveCurrent = inputFields.at(index - 1);
+                let f2 = [currentRow, rowAboveCurrent]
+                
+                setInputFields(f2 as [])
+            } else if (inputFields.length > 2) {
+                if(index == 0){
+                    // the first row is selected therefore, the operation will not happen
+                    return
+                }else if(index == 1){
+                    // the second row is selected. 
+                    let currentRow = inputFields.at(1);
+                    let rowAboveCurrent = inputFields.at(0);
+                    let newArray = [currentRow, rowAboveCurrent, ...inputFields.slice(index + 1)]
+                    setInputFields(newArray as [])
+                } else {
+                    let aboveIndexEntires = inputFields.slice(0, index - 1);
+
+                    let rowAboveCurrent = inputFields.at(index - 1);
+                    let currentRow = inputFields.at(index);
+                    let belowCurrentRowEntries = inputFields.slice(index + 1)
+                    
+                    aboveIndexEntires.push(currentRow as any)
+                    aboveIndexEntires.push(rowAboveCurrent as any)
+
+                    
+                    aboveIndexEntires.push.apply(aboveIndexEntires,belowCurrentRowEntries);
+                   setInputFields(aboveIndexEntires as [])
+                }
+                // rebuild the inputfields list
+
+                // get the beginning of the inputfields
+                // let startfields = inputFields.slice(0, index - 1)
+                // // newField = [...startfields]
+
+                // let endFields = inputFields.slice(index, inputFields.length - 1)
+                // let f2 = [...startfields, currentRow]
+
+                // let f3 = [...f2, rowAboveCurrent]
+
+                // let f4 = [...f3, endFields];
+
+                // let newField = f4 as []
+
+                // setInputFields(newField)
+
+            }
+        }
+    }
 
 
     const submit = (e: any) => {
@@ -248,6 +305,13 @@ function Generator() {
                             <div key={index}>
                                 <hr />
                                 <br />
+                                {inputFields.length > 0 &&
+                                    <>
+                                        <Button onClick={() => moveColumnUp(index)}>UP</Button>
+                                        <Button>Down</Button>
+                                    </>
+                                }
+
                                 <h6 className={'datainputrowcount'}>{index + 1}</h6>
                                 <TextField className={'datainputrow'} type="text"
                                     value={input.columnName}
