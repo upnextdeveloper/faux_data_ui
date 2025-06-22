@@ -212,16 +212,16 @@ function Generator() {
                     let reorderedRows = [rowBelowCurrent, currentRow];
 
                     setInputFields(reorderedRows as [])
-                }else if(index == 1){
+                } else if (index == 1) {
                     return;
                 }
-            // if the inputrow count is larger than 2
+                // if the inputrow count is larger than 2
             } else if (inputFields.length > 2) {
                 // if the last index is selected, no down
                 // operation will take place
-                if(index == inputFields.length - 1){
+                if (index == inputFields.length - 1) {
                     return;
-                }else if(index == 0){
+                } else if (index == 0) {
                     let currentRow = inputFields.at(0);
                     let rowBelowCurrent = inputFields.at(1);
                     let reorderedRows = [rowBelowCurrent, currentRow, ...inputFields.slice(index + 2)]
@@ -236,7 +236,7 @@ function Generator() {
                     aboveIndexEntires.push(rowBelowCurrent as any);
                     aboveIndexEntires.push(currentRow as any);
 
-                    aboveIndexEntires.push.apply(aboveIndexEntires,belowCurrentRowEntries);
+                    aboveIndexEntires.push.apply(aboveIndexEntires, belowCurrentRowEntries);
                     setInputFields(aboveIndexEntires as []);
                 }
             }
@@ -371,8 +371,10 @@ function Generator() {
                                     <MenuItem value={'Middle Name'}>Middle Name</MenuItem>
                                     <MenuItem value={'Last Name'}>Last Name</MenuItem>
                                     <MenuItem value={'Age'}>Age</MenuItem>
+                                    <MenuItem value={'Age18'}>Age 18+</MenuItem>
                                     <MenuItem value={'Gender'}>Gender</MenuItem>
                                     <MenuItem value={'Birthday'}>Birthday</MenuItem>
+                                    <MenuItem value={'Bday18'}>Birthday 18+</MenuItem>
                                     <MenuItem value={'Race'}>Race</MenuItem>
                                     <MenuItem value={'Marital Status'}>Marital Status</MenuItem>
                                     <MenuItem value={'Current Education'}>Current Education</MenuItem>
@@ -496,6 +498,19 @@ function Generator() {
                     {inputFields.length != 0
                         &&
                         <div>
+                            <InputLabel id="demo-simple-select-label">Export File Type</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={fileType}
+                                onChange={(e) => handleFileTypeChange(e)}
+                            >
+                                <MenuItem value={'Excel File'}>Excel File</MenuItem>
+                                <MenuItem value={'MySQL File'}>MySQL File</MenuItem>
+                                {/* <MenuItem value={'JSON File'}>JSON File</MenuItem>
+                                <MenuItem value={'XML File'}>XML File</MenuItem> */}
+                            </Select>
+                            <br /><br />
                             <InputLabel id="demo-simple-select-label"># of Rows</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -514,18 +529,6 @@ function Generator() {
                                 <MenuItem value={1000000}>One Million (1000000)</MenuItem>
                             </Select>
                             <br /><br />
-                            <InputLabel id="demo-simple-select-label">Export File Type</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={fileType}
-                                onChange={(e) => handleFileTypeChange(e)}
-                            >
-                                <MenuItem value={'Excel File'}>Excel File</MenuItem>
-                                <MenuItem value={'MySQL File'}>MySQL File</MenuItem>
-                                <MenuItem value={'JSON File'}>JSON File</MenuItem>
-                                <MenuItem value={'XML File'}>XML File</MenuItem>
-                            </Select>
                         </div>
 
                     }
