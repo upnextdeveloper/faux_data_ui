@@ -25,8 +25,6 @@ function Generator() {
     const [generationSuccessFul, setGenerationSuccessFul] = useState(false);
     const [generationFailed, setGenerationFailed] = useState(false);
 
-    const localFauxDataLocation = "C:\\Programming_Projects\\my_projects\\faux_data_app\\faux_data_files\\";
-
     const client = axios.create({
         baseURL: "http://localhost:8080/api/v1/entry"
     })
@@ -60,6 +58,7 @@ function Generator() {
                 setGenerationSuccessFul(true);
                 setGenerationFailed(false);
                 calculateCost(fileType, rowCount);
+                // then upload file to aws s3
             }).catch(
                 function (error) {
                     setGenerationSuccessFul(false);
@@ -74,27 +73,27 @@ function Generator() {
 
     const calculateCost = (fileType: String, rowCount: Number) => {
         let cost = 0;
-        if (fileType == FILETYPE.MySQL) {
-            cost = cost + 0.10
-        } else if (fileType == FILETYPE.excel) {
-            cost = cost + 0.15
-        }
+        // if (fileType == FILETYPE.MySQL) {
+        //     cost = cost + 0.10
+        // } else if (fileType == FILETYPE.excel) {
+        //     cost = cost + 0.15
+        // }
 
-        if (rowCount == ROWCOUNT.thousand) {
-            cost = cost + 1.99
-        } else if (rowCount == ROWCOUNT.tenthousand) {
-            cost = cost + 3.99
-        } else if (rowCount == ROWCOUNT.fifthousand) {
-            cost = cost + 5.99
-        } else if (rowCount == ROWCOUNT.hunthousand) {
-            cost = cost + 7.99
-        } else if (rowCount == ROWCOUNT.fivehunthousand) {
-            cost = cost + 9.99
-        } else if (rowCount == ROWCOUNT.million) {
-            cost = cost + 11.99
-        }
+        // if (rowCount == ROWCOUNT.thousand) {
+        //     cost = cost + 1.99
+        // } else if (rowCount == ROWCOUNT.tenthousand) {
+        //     cost = cost + 3.99
+        // } else if (rowCount == ROWCOUNT.fifthousand) {
+        //     cost = cost + 5.99
+        // } else if (rowCount == ROWCOUNT.hunthousand) {
+        //     cost = cost + 7.99
+        // } else if (rowCount == ROWCOUNT.fivehunthousand) {
+        //     cost = cost + 9.99
+        // } else if (rowCount == ROWCOUNT.million) {
+        //     cost = cost + 11.99
+        // }
 
-        cost = Math.round(cost * 100) / 100
+        // cost = Math.round(cost * 100) / 100
 
         setCost(cost);
 
@@ -339,9 +338,9 @@ function Generator() {
                                         </Button>
                                     </>
                                 }
-
-                                <h6 className={'datainputrowcount'}>{index + 1}</h6>
-                                <TextField className={'datainputrow'} type="text"
+                                <TextField
+                                    size="small"
+                                    type="text"
                                     value={input.columnName}
                                     placeholder="Column Name"
                                     name="Column Name"
@@ -466,7 +465,8 @@ function Generator() {
                                 <MenuItem value={'False'}>False</MenuItem> */}
                                     <MenuItem value={'True/False'}>True/False</MenuItem>
                                 </Select>
-
+                                {input.datatype == 'Money - Positive Only' &&
+                                    <TextField type="number" placeholder="Money Amount"></TextField> }
                                 <Select
                                     id="isRequired"
                                     displayEmpty
@@ -482,6 +482,7 @@ function Generator() {
                                     <MenuItem value={'Y'}>Yes</MenuItem>
                                     <MenuItem value={'N'}>No</MenuItem>
                                 </Select>
+                                <br/>
                                 {/* <label>is required</label>
                             <Switch defaultChecked /> */}
 
