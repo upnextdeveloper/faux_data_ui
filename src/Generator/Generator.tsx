@@ -556,7 +556,7 @@ function Generator() {
                         <h3 className={'successful_generation'}>Your {fileType} has generated successfully.</h3>
                         {/* <Button onClick={() => console.log("File name: " + fileName)}>File Name</Button>
                         <br/> */}
-                        <Downloader fileName={fileName} cost={cost} />
+                        <Downloader fileName={fileName}/>
                     </>
                 }
                 {
