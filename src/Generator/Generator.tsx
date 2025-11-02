@@ -25,8 +25,6 @@ function Generator() {
     const [generationSuccessFul, setGenerationSuccessFul] = useState(false);
     const [generationFailed, setGenerationFailed] = useState(false);
 
-    const localFauxDataLocation = "C:\\Programming_Projects\\my_projects\\faux_data_app\\faux_data_files\\";
-
     const client = axios.create({
         baseURL: "http://localhost:8080/api/v1/entry"
     })
@@ -60,6 +58,7 @@ function Generator() {
                 setGenerationSuccessFul(true);
                 setGenerationFailed(false);
                 calculateCost(fileType, rowCount);
+                // then upload file to aws s3
             }).catch(
                 function (error) {
                     setGenerationSuccessFul(false);
@@ -74,27 +73,27 @@ function Generator() {
 
     const calculateCost = (fileType: String, rowCount: Number) => {
         let cost = 0;
-        if (fileType == FILETYPE.MySQL) {
-            cost = cost + 0.10
-        } else if (fileType == FILETYPE.excel) {
-            cost = cost + 0.15
-        }
+        // if (fileType == FILETYPE.MySQL) {
+        //     cost = cost + 0.10
+        // } else if (fileType == FILETYPE.excel) {
+        //     cost = cost + 0.15
+        // }
 
-        if (rowCount == ROWCOUNT.thousand) {
-            cost = cost + 1.99
-        } else if (rowCount == ROWCOUNT.tenthousand) {
-            cost = cost + 3.99
-        } else if (rowCount == ROWCOUNT.fifthousand) {
-            cost = cost + 5.99
-        } else if (rowCount == ROWCOUNT.hunthousand) {
-            cost = cost + 7.99
-        } else if (rowCount == ROWCOUNT.fivehunthousand) {
-            cost = cost + 9.99
-        } else if (rowCount == ROWCOUNT.million) {
-            cost = cost + 11.99
-        }
+        // if (rowCount == ROWCOUNT.thousand) {
+        //     cost = cost + 1.99
+        // } else if (rowCount == ROWCOUNT.tenthousand) {
+        //     cost = cost + 3.99
+        // } else if (rowCount == ROWCOUNT.fifthousand) {
+        //     cost = cost + 5.99
+        // } else if (rowCount == ROWCOUNT.hunthousand) {
+        //     cost = cost + 7.99
+        // } else if (rowCount == ROWCOUNT.fivehunthousand) {
+        //     cost = cost + 9.99
+        // } else if (rowCount == ROWCOUNT.million) {
+        //     cost = cost + 11.99
+        // }
 
-        cost = Math.round(cost * 100) / 100
+        // cost = Math.round(cost * 100) / 100
 
         setCost(cost);
 
@@ -212,16 +211,16 @@ function Generator() {
                     let reorderedRows = [rowBelowCurrent, currentRow];
 
                     setInputFields(reorderedRows as [])
-                }else if(index == 1){
+                } else if (index == 1) {
                     return;
                 }
-            // if the inputrow count is larger than 2
+                // if the inputrow count is larger than 2
             } else if (inputFields.length > 2) {
                 // if the last index is selected, no down
                 // operation will take place
-                if(index == inputFields.length - 1){
+                if (index == inputFields.length - 1) {
                     return;
-                }else if(index == 0){
+                } else if (index == 0) {
                     let currentRow = inputFields.at(0);
                     let rowBelowCurrent = inputFields.at(1);
                     let reorderedRows = [rowBelowCurrent, currentRow, ...inputFields.slice(index + 2)]
@@ -236,7 +235,7 @@ function Generator() {
                     aboveIndexEntires.push(rowBelowCurrent as any);
                     aboveIndexEntires.push(currentRow as any);
 
-                    aboveIndexEntires.push.apply(aboveIndexEntires,belowCurrentRowEntries);
+                    aboveIndexEntires.push.apply(aboveIndexEntires, belowCurrentRowEntries);
                     setInputFields(aboveIndexEntires as []);
                 }
             }
@@ -339,9 +338,9 @@ function Generator() {
                                         </Button>
                                     </>
                                 }
-
-                                <h6 className={'datainputrowcount'}>{index + 1}</h6>
-                                <TextField className={'datainputrow'} type="text"
+                                <TextField
+                                    size="small"
+                                    type="text"
                                     value={input.columnName}
                                     placeholder="Column Name"
                                     name="Column Name"
@@ -371,8 +370,10 @@ function Generator() {
                                     <MenuItem value={'Middle Name'}>Middle Name</MenuItem>
                                     <MenuItem value={'Last Name'}>Last Name</MenuItem>
                                     <MenuItem value={'Age'}>Age</MenuItem>
+                                    <MenuItem value={'Age18'}>Age 18+</MenuItem>
                                     <MenuItem value={'Gender'}>Gender</MenuItem>
                                     <MenuItem value={'Birthday'}>Birthday</MenuItem>
+                                    <MenuItem value={'Bday18'}>Birthday 18+</MenuItem>
                                     <MenuItem value={'Race'}>Race</MenuItem>
                                     <MenuItem value={'Marital Status'}>Marital Status</MenuItem>
                                     <MenuItem value={'Current Education'}>Current Education</MenuItem>
@@ -464,7 +465,8 @@ function Generator() {
                                 <MenuItem value={'False'}>False</MenuItem> */}
                                     <MenuItem value={'True/False'}>True/False</MenuItem>
                                 </Select>
-
+                                {input.datatype == 'Money - Positive Only' &&
+                                    <TextField type="number" placeholder="Money Amount"></TextField> }
                                 <Select
                                     id="isRequired"
                                     displayEmpty
@@ -480,6 +482,7 @@ function Generator() {
                                     <MenuItem value={'Y'}>Yes</MenuItem>
                                     <MenuItem value={'N'}>No</MenuItem>
                                 </Select>
+                                <br/>
                                 {/* <label>is required</label>
                             <Switch defaultChecked /> */}
 
@@ -496,6 +499,19 @@ function Generator() {
                     {inputFields.length != 0
                         &&
                         <div>
+                            <InputLabel id="demo-simple-select-label">Export File Type</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={fileType}
+                                onChange={(e) => handleFileTypeChange(e)}
+                            >
+                                <MenuItem value={'Excel File'}>Excel File</MenuItem>
+                                <MenuItem value={'MySQL File'}>MySQL File</MenuItem>
+                                {/* <MenuItem value={'JSON File'}>JSON File</MenuItem>
+                                <MenuItem value={'XML File'}>XML File</MenuItem> */}
+                            </Select>
+                            <br /><br />
                             <InputLabel id="demo-simple-select-label"># of Rows</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -514,18 +530,6 @@ function Generator() {
                                 <MenuItem value={1000000}>One Million (1000000)</MenuItem>
                             </Select>
                             <br /><br />
-                            <InputLabel id="demo-simple-select-label">Export File Type</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={fileType}
-                                onChange={(e) => handleFileTypeChange(e)}
-                            >
-                                <MenuItem value={'Excel File'}>Excel File</MenuItem>
-                                <MenuItem value={'MySQL File'}>MySQL File</MenuItem>
-                                <MenuItem value={'JSON File'}>JSON File</MenuItem>
-                                <MenuItem value={'XML File'}>XML File</MenuItem>
-                            </Select>
                         </div>
 
                     }

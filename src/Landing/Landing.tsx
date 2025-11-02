@@ -30,12 +30,12 @@ function Landing() {
                         <Card.Title>Row Count</Card.Title>
                         <Card.Text>
                             <ul style={{ listStyle: 'none' }}>
-                                <li>1,000 Rows: $ 1.99</li>
-                                <li>10,000 Rows: $ 3.99</li>
+                                <li>1,000 Rows: $ 0.00</li>
+                                {/* <li>10,000 Rows: $ 3.99</li>
                                 <li>50,000 Rows: $ 5.99</li>
                                 <li>100,000 Rows: $ 7.99</li>
                                 <li>500,000 Rows: $ 9.99</li>
-                                <li>1,000,000 Rows: $ 11.99</li>
+                                <li>1,000,000 Rows: $ 11.99</li> */}
                             </ul>
                         </Card.Text>
                     </Card.Body>
@@ -45,8 +45,8 @@ function Landing() {
                         <Card.Title>File Type</Card.Title>
                         <Card.Text>
                             <ul style={{ listStyle: 'none' }}>
-                                <li>MySQL File: $ 0.10</li>
-                                <li>Excel File: $ 0.15</li>
+                                <li>MySQL File: $ 0.00</li>
+                                <li>Excel File: $ 0.00</li>
                             </ul>
                         </Card.Text>
                     </Card.Body>
